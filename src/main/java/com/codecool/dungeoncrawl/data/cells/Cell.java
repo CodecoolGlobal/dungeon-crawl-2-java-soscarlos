@@ -1,17 +1,19 @@
-package com.codecool.dungeoncrawl.logic;
+package com.codecool.dungeoncrawl.data.cells;
 
-import com.codecool.dungeoncrawl.logic.actors.Actor;
+import com.codecool.dungeoncrawl.data.Drawable;
+import com.codecool.dungeoncrawl.data.Coordinates;
+import com.codecool.dungeoncrawl.data.GameMap;
+import com.codecool.dungeoncrawl.data.actors.Actor;
 
 public class Cell implements Drawable {
     private CellType type;
     private Actor actor;
     private GameMap gameMap;
-    private int x, y;
+    private Coordinates coordinates;
 
-    Cell(GameMap gameMap, int x, int y, CellType type) {
+    public Cell(GameMap gameMap, int x, int y, CellType type) {
         this.gameMap = gameMap;
-        this.x = x;
-        this.y = y;
+        this.coordinates = new Coordinates(x, y);
         this.type = type;
     }
 
@@ -32,7 +34,7 @@ public class Cell implements Drawable {
     }
 
     public Cell getNeighbor(int dx, int dy) {
-        return gameMap.getCell(x + dx, y + dy);
+        return gameMap.getCell(coordinates.getX() + dx, coordinates.getY() + dy);
     }
 
     @Override
@@ -41,10 +43,10 @@ public class Cell implements Drawable {
     }
 
     public int getX() {
-        return x;
+        return coordinates.getX();
     }
 
     public int getY() {
-        return y;
+        return coordinates.getY();
     }
 }

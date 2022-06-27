@@ -1,6 +1,6 @@
-package com.codecool.dungeoncrawl.logic.actors;
+package com.codecool.dungeoncrawl.data.actors;
 
-import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.data.cells.Cell;
 
 public class Skeleton extends Actor {
     public Skeleton(Cell cell) {
