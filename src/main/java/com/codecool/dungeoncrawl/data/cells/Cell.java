@@ -1,9 +1,9 @@
 package com.codecool.dungeoncrawl.data.cells;
 
 import com.codecool.dungeoncrawl.data.Drawable;
-import com.codecool.dungeoncrawl.logic.Coordinates;
-import com.codecool.dungeoncrawl.logic.GameMap;
-import com.codecool.dungeoncrawl.logic.actors.Actor;
+import com.codecool.dungeoncrawl.data.Coordinates;
+import com.codecool.dungeoncrawl.data.GameMap;
+import com.codecool.dungeoncrawl.data.actors.Actor;
 
 public class Cell implements Drawable {
     private CellType type;
