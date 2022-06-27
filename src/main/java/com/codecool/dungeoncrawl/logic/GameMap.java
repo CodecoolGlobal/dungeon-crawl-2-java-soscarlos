@@ -1,5 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
+import com.codecool.dungeoncrawl.data.cells.Cell;
+import com.codecool.dungeoncrawl.data.cells.CellType;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 
 public class GameMap {

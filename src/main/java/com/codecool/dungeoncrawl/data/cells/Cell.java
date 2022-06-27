@@ -1,5 +1,8 @@
-package com.codecool.dungeoncrawl.logic;
+package com.codecool.dungeoncrawl.data.cells;
 
+import com.codecool.dungeoncrawl.data.Drawable;
+import com.codecool.dungeoncrawl.logic.Coordinates;
+import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 
 public class Cell implements Drawable {
@@ -8,7 +11,7 @@ public class Cell implements Drawable {
     private GameMap gameMap;
     private Coordinates coordinates;
 
-    Cell(GameMap gameMap, int x, int y, CellType type) {
+    public Cell(GameMap gameMap, int x, int y, CellType type) {
         this.gameMap = gameMap;
         this.coordinates = new Coordinates(x, y);
         this.type = type;
