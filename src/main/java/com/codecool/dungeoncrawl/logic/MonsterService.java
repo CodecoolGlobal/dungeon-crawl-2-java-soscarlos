@@ -1,10 +1,8 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.data.actors.Actor;
-import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.directions.Direction;
 import com.codecool.dungeoncrawl.data.directions.RandomDirectionPicker;
-import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 
 import java.util.List;
 
