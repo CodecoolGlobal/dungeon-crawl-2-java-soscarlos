@@ -28,4 +28,13 @@ public class Player extends Actor {
     public void addToInventory(Item item) {
         inventory.add(item);
     }
+
+    public String inventoryToString(){
+        ArrayList<String> itemNames = new ArrayList<>();
+        for (Item item : inventory) {
+            String name = item.getTileName().toUpperCase();
+            itemNames.add(name);
+        }
+        return String.join(", ", itemNames);
+    }
 }

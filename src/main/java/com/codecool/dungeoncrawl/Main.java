@@ -23,7 +23,9 @@ public class Main extends Application {
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
+    GridPane ui = new GridPane();
     Label healthLabel = new Label();
+    Label inventoryLabel = new Label();
     Button pickUpItem = new Button("Pick up!");
 
     public static void main(String[] args) {
@@ -32,20 +34,19 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
         pickUpItem.setFocusTraversable(false);
 
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
-        ui.add(pickUpItem, 0, 1);
+        addLabels();
+        ui.add(pickUpItem, 0, 3);
+        loadLabels();
 
         pickUpItem.setOnAction(actionEvent ->  {
             if(map.getPlayer().getCell().getItem() != null) {
                 map.getPlayer().getCell().getItem().pickUp(map.getPlayer());
             }
-            System.out.println(map.getPlayer().getInventory());
+            loadLabels();
         });
 
         BorderPane borderPane = new BorderPane();
@@ -60,6 +61,17 @@ public class Main extends Application {
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
+    }
+
+    private void addLabels() {
+        ui.add(new Label("Health: "), 0, 0);
+        ui.add(healthLabel, 1, 0);
+        ui.add(new Label("\nInventory: "), 0, 1);
+        ui.add(inventoryLabel, 0, 2);
+    }
+
+    public void loadLabels() {
+        inventoryLabel.setText(" " + map.getPlayer().inventoryToString());
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
