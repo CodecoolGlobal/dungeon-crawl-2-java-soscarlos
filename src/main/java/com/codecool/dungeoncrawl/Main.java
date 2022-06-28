@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -22,6 +23,7 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Button pickUpItem = new Button("Pick up!");
 
     public static void main(String[] args) {
         launch(args);
@@ -35,6 +37,11 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
+//        ui.add(pickUpItem, 0, 1);
+
+//        pickUpItem.setOnAction(actionEvent ->  {
+//            System.out.println(map.getPlayer().getCell().getItem());
+//        });
 
         BorderPane borderPane = new BorderPane();
 
@@ -52,18 +59,22 @@ public class Main extends Application {
 
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
+            case W:
             case UP:
                 map.getPlayer().move(0, -1);
                 refresh();
                 break;
+            case S:
             case DOWN:
                 map.getPlayer().move(0, 1);
                 refresh();
                 break;
+            case A:
             case LEFT:
                 map.getPlayer().move(-1, 0);
                 refresh();
                 break;
+            case D:
             case RIGHT:
                 map.getPlayer().move(1,0);
                 refresh();
