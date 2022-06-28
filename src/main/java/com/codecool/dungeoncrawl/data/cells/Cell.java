@@ -4,12 +4,15 @@ import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.Coordinates;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.data.actors.Actor;
+import com.codecool.dungeoncrawl.data.items.Item;
 
 public class Cell implements Drawable {
     private CellType type;
     private Actor actor;
     private GameMap gameMap;
     private Coordinates coordinates;
+
+    private Item item;
 
     public Cell(GameMap gameMap, int x, int y, CellType type) {
         this.gameMap = gameMap;
@@ -31,6 +34,14 @@ public class Cell implements Drawable {
 
     public Actor getActor() {
         return actor;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public Item getItem() {
+        return item;
     }
 
     public Cell getNeighbor(int dx, int dy) {
