@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.GameMap;
+import com.codecool.dungeoncrawl.data.items.Item;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -34,14 +35,18 @@ public class Main extends Application {
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
+        pickUpItem.setFocusTraversable(false);
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
-//        ui.add(pickUpItem, 0, 1);
+        ui.add(pickUpItem, 0, 1);
 
-//        pickUpItem.setOnAction(actionEvent ->  {
-//            System.out.println(map.getPlayer().getCell().getItem());
-//        });
+        pickUpItem.setOnAction(actionEvent ->  {
+            if(map.getPlayer().getCell().getItem() != null) {
+                map.getPlayer().getCell().getItem().pickUp(map.getPlayer());
+            }
+            System.out.println(map.getPlayer().getInventory());
+        });
 
         BorderPane borderPane = new BorderPane();
 
