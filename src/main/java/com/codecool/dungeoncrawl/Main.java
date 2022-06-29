@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl;
 
+import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
@@ -97,6 +98,8 @@ public class Main extends Application {
                 map.getPlayer().move(0, -1);
                 monsterService.moveMonsters(map.getMonsters());
                 playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, -1);
+                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
+                map.removeMonster();
                 refresh();
                 break;
             case S:
@@ -104,6 +107,8 @@ public class Main extends Application {
                 map.getPlayer().move(0, 1);
                 monsterService.moveMonsters(map.getMonsters());
                 playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, 1);
+                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
+                map.removeMonster();
                 refresh();
                 break;
             case A:
@@ -111,6 +116,8 @@ public class Main extends Application {
                 map.getPlayer().move(-1, 0);
                 monsterService.moveMonsters(map.getMonsters());
                 playerService.attackMonster(map.getMonsters(), map.getPlayer(), -1, 0);
+                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
+                map.removeMonster();
                 refresh();
                 break;
             case D:
@@ -118,6 +125,8 @@ public class Main extends Application {
                 map.getPlayer().move(1,0);
                 monsterService.moveMonsters(map.getMonsters());
                 playerService.attackMonster(map.getMonsters(), map.getPlayer(), 1, 0);
+                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
+                map.removeMonster();
                 refresh();
                 break;
         }

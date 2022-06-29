@@ -6,8 +6,6 @@ import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.cells.CellType;
 import com.codecool.dungeoncrawl.data.items.Item;
 
-import java.util.List;
-
 public class ActorMovementValidator {
     public boolean validateMove(Cell cell, int dx, int dy) {
         Cell nextCell = cell.getNeighbor(dx, dy);
@@ -22,10 +20,23 @@ public class ActorMovementValidator {
         return item != null;
     }
 
-    public boolean validatePlayer(Cell cell, int dx, int dy) {
+    public boolean isPlayer(Cell cell, int dx, int dy) {
         Cell nextCell = cell.getNeighbor(dx, dy);
         Actor enemy = nextCell.getActor();
         return enemy instanceof Player;
+    }
+
+    public boolean playerIsNext(Actor monster) {
+        boolean playerIsNext = false;
+        Cell monsterCell = monster.getCell();
+        if (isPlayer(monsterCell, 0, -1) ||
+                isPlayer(monsterCell, 0, 1) ||
+                isPlayer(monsterCell, -1, 0) ||
+                isPlayer(monsterCell, 1, 0)) {
+            playerIsNext = true;
+        }
+        System.out.println("is player next? "+playerIsNext);
+        return playerIsNext;
     }
 
     public boolean monsterIsNext(Cell playerCell, Cell monsterCell, int dx, int dy) {

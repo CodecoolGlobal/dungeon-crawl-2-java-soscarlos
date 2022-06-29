@@ -14,6 +14,8 @@ public class Cell implements Drawable {
 
     private Item item;
 
+    private boolean hasDrawableElement;
+
     public Cell(GameMap gameMap, int x, int y, CellType type) {
         this.gameMap = gameMap;
         this.coordinates = new Coordinates(x, y);
@@ -46,6 +48,11 @@ public class Cell implements Drawable {
 
     public Cell getNeighbor(int dx, int dy) {
         return gameMap.getCell(coordinates.getX() + dx, coordinates.getY() + dy);
+    }
+
+    public boolean hasDrawableElement(){
+        hasDrawableElement = getActor() != null || getItem() != null;
+        return hasDrawableElement;
     }
 
     @Override

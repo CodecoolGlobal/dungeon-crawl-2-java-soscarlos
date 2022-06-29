@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.data.actors.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GameMap {
     private int width;
@@ -55,7 +56,12 @@ public class GameMap {
     public void addMonster(Actor monster){
         monsters.add(monster);
     }
-    public void removeMonster(Actor monster){
-        monsters.remove(monster);
+    public void removeMonster(){
+        for (int i = 0; i < monsters.size(); i++) {
+            Actor monster = monsters.get(i);
+            if (monster.getHealth() <= 0){
+                monsters.remove(monster);
+            }
+        }
     }
 }
