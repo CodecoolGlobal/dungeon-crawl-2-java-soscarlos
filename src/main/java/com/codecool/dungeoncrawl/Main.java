@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.GameMap;
+import com.codecool.dungeoncrawl.data.items.Item;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.MonsterService;
 import javafx.application.Application;
@@ -9,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -23,7 +25,10 @@ public class Main extends Application {
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
+    GridPane ui = new GridPane();
     Label healthLabel = new Label();
+    Label inventoryLabel = new Label();
+    Button pickUpItem = new Button("Pick up!");
 
     public static void main(String[] args) {
         launch(args);
@@ -31,12 +36,20 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
+        pickUpItem.setFocusTraversable(false);
 
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
+        addLabels();
+        ui.add(pickUpItem, 0, 3);
+        loadLabels();
+
+        pickUpItem.setOnAction(actionEvent ->  {
+            if(map.getPlayer().getCell().getItem() != null) {
+                map.getPlayer().getCell().getItem().pickUp(map.getPlayer());
+            }
+            loadLabels();
+        });
 
         BorderPane borderPane = new BorderPane();
 
@@ -52,23 +65,38 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    private void addLabels() {
+        ui.add(new Label("Health: "), 0, 0);
+        ui.add(healthLabel, 1, 0);
+        ui.add(new Label("\nInventory: "), 0, 1);
+        ui.add(inventoryLabel, 0, 2);
+    }
+
+    public void loadLabels() {
+        inventoryLabel.setText(" " + map.getPlayer().inventoryToString());
+    }
+
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
+            case W:
             case UP:
                 map.getPlayer().move(0, -1);
                 monsterService.moveMonsters(map.getMonsters());
                 refresh();
                 break;
+            case S:
             case DOWN:
                 map.getPlayer().move(0, 1);
                 monsterService.moveMonsters(map.getMonsters());
                 refresh();
                 break;
+            case A:
             case LEFT:
                 map.getPlayer().move(-1, 0);
                 monsterService.moveMonsters(map.getMonsters());
                 refresh();
                 break;
+            case D:
             case RIGHT:
                 map.getPlayer().move(1,0);
                 monsterService.moveMonsters(map.getMonsters());

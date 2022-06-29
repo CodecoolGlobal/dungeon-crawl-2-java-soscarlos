@@ -8,8 +8,13 @@ public abstract class Collectible extends Item {
 
     @Override
     public void pickUp(Player player) {
-        //TODO: write pickUp method here
+        Item item = player.getCell().getItem();
+        if (item != null) {
+            player.addToInventory(item);
+            player.getCell().setItem(null);
+        }
     }
+
     public Collectible(Cell cell) {
         super(cell);
     }
