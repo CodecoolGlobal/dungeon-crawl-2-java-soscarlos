@@ -1,10 +1,9 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.data.GameMap;
+import com.codecool.dungeoncrawl.data.actors.*;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.cells.CellType;
-import com.codecool.dungeoncrawl.data.actors.Player;
-import com.codecool.dungeoncrawl.data.actors.Skeleton;
 import com.codecool.dungeoncrawl.data.items.collectibles.Key;
 import com.codecool.dungeoncrawl.data.items.collectibles.Sword;
 
@@ -38,7 +37,18 @@ public class MapLoader {
                             break;
                         case 's':
                             cell.setType(CellType.FLOOR);
-                            new Skeleton(cell);
+                            Actor skeleton = new Skeleton(cell);
+                            map.addMonster(skeleton);
+                            break;
+                        case 'e':
+                            cell.setType(CellType.FLOOR);
+                            Actor demon = new Demon(cell);
+                            map.addMonster(demon);
+                            break;
+                        case 't':
+                            cell.setType(CellType.FLOOR);
+                            Actor troll = new Troll(cell);
+                            map.addMonster(troll);
                             break;
                         case '@':
                             cell.setType(CellType.FLOOR);

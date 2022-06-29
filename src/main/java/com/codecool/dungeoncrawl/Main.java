@@ -3,6 +3,7 @@ package com.codecool.dungeoncrawl;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.MonsterService;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -17,6 +18,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
+    MonsterService monsterService = new MonsterService();
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -54,18 +56,22 @@ public class Main extends Application {
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
+                monsterService.moveMonsters(map.getMonsters());
                 refresh();
                 break;
             case DOWN:
                 map.getPlayer().move(0, 1);
+                monsterService.moveMonsters(map.getMonsters());
                 refresh();
                 break;
             case LEFT:
                 map.getPlayer().move(-1, 0);
+                monsterService.moveMonsters(map.getMonsters());
                 refresh();
                 break;
             case RIGHT:
                 map.getPlayer().move(1,0);
+                monsterService.moveMonsters(map.getMonsters());
                 refresh();
                 break;
         }

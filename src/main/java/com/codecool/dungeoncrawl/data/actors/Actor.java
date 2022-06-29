@@ -1,15 +1,15 @@
 package com.codecool.dungeoncrawl.data.actors;
 
-import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.Drawable;
-import com.codecool.dungeoncrawl.data.cells.CellType;
+import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
-
-import java.util.Objects;
 
 public abstract class Actor implements Drawable {
     private Cell cell;
+
     private int health = 10;
+
+    private int attackStrength = 10;
 
     private ActorMovementValidator validate;
 
@@ -32,6 +32,10 @@ public abstract class Actor implements Drawable {
         return health;
     }
 
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
     public Cell getCell() {
         return cell;
     }
@@ -42,5 +46,13 @@ public abstract class Actor implements Drawable {
 
     public int getY() {
         return cell.getY();
+    }
+
+    public void setAttackStrength(int attackStrength) {
+        this.attackStrength = attackStrength;
+    }
+
+    public int getAttackStrength() {
+        return attackStrength;
     }
 }
