@@ -22,6 +22,7 @@ public abstract class Actor implements Drawable {
         validate = new ActorMovementValidator();
         Cell nextCell = cell.getNeighbor(dx, dy);
         cell.setActor(null);
+
         if (validate.validateMove(cell, dx, dy)) {
             nextCell.setActor(this);
             cell = nextCell;
