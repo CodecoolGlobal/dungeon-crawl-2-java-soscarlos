@@ -12,15 +12,13 @@ public abstract class Actor implements Drawable {
 
     private int attackStrength = 10;
 
-    private ActorMovementValidator validate;
-
     public Actor(Cell cell) {
         this.cell = cell;
         this.cell.setActor(this);
     }
 
     public void move(int dx, int dy) {
-        validate = new ActorMovementValidator();
+        ActorMovementValidator validate = new ActorMovementValidator();
         Cell nextCell = cell.getNeighbor(dx, dy);
         cell.setActor(null);
 
