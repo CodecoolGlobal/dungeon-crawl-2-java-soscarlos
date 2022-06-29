@@ -117,9 +117,7 @@ public class Main extends Application {
 
         if (validate.checkPlayerOnItem(map.getPlayer())) {
             showPickUpButton();
-        } else {
-            hidePickUpButton();
-        }
+        } else hidePickUpButton();
     }
 
     private void refresh() {

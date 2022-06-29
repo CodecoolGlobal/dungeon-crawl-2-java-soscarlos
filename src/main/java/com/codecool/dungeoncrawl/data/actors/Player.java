@@ -30,6 +30,7 @@ public class Player extends Actor {
         inventory.add(item);
     }
 
+    @Override
     public boolean hasKey() {
         boolean hasKey = false;
         for (Item item : inventory) {
