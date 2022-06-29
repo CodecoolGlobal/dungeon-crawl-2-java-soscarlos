@@ -42,11 +42,11 @@ public class Player extends Actor {
     }
 
     public String inventoryToString(){
-        ArrayList<String> itemNames = new ArrayList<>();
+        StringBuilder itemNames = new StringBuilder();
         for (Item item : inventory) {
             String name = item.getTileName().toUpperCase();
-            itemNames.add(name);
+            itemNames.append("o " + name + "\n");
         }
-        return String.join(", ", itemNames);
+        return itemNames.toString();
     }
 }

@@ -70,7 +70,7 @@ public class Main extends Application {
     private void addLabels() {
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
-        ui.add(new Label("\nInventory: "), 0, 1);
+        ui.add(new Label("\nInventory:"), 0, 1);
         ui.add(inventoryLabel, 0, 2);
     }
 
