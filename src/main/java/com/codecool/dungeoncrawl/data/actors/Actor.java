@@ -9,7 +9,7 @@ public abstract class Actor implements Drawable {
 
     private int health = 10;
 
-    private int attackStrength = 10;
+    private int attackStrength = 5;
 
     private ActorMovementValidator validate;
 
@@ -23,10 +23,17 @@ public abstract class Actor implements Drawable {
         Cell nextCell = cell.getNeighbor(dx, dy);
         cell.setActor(null);
 
+//        System.out.println("This player: "+validate.validatePlayer(cell, dx, dy));
+
         if (validate.validateMove(cell, dx, dy)) {
             nextCell.setActor(this);
             cell = nextCell;
         } else cell.setActor(this);
+    }
+
+    public void attack(Actor enemy){
+        int enemyHealth = enemy.getHealth();
+        enemy.setHealth(enemyHealth - this.attackStrength);
     }
 
     public int getHealth() {

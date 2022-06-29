@@ -55,4 +55,7 @@ public class GameMap {
     public void addMonster(Actor monster){
         monsters.add(monster);
     }
+    public void removeMonster(Actor monster){
+        monsters.remove(monster);
+    }
 }

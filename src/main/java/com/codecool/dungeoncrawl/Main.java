@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.MonsterService;
+import com.codecool.dungeoncrawl.logic.PlayerService;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -21,6 +22,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
     MonsterService monsterService = new MonsterService();
+
+    PlayerService playerService = new PlayerService();
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -93,24 +96,28 @@ public class Main extends Application {
             case UP:
                 map.getPlayer().move(0, -1);
                 monsterService.moveMonsters(map.getMonsters());
+                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, -1);
                 refresh();
                 break;
             case S:
             case DOWN:
                 map.getPlayer().move(0, 1);
                 monsterService.moveMonsters(map.getMonsters());
+                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, 1);
                 refresh();
                 break;
             case A:
             case LEFT:
                 map.getPlayer().move(-1, 0);
                 monsterService.moveMonsters(map.getMonsters());
+                playerService.attackMonster(map.getMonsters(), map.getPlayer(), -1, 0);
                 refresh();
                 break;
             case D:
             case RIGHT:
                 map.getPlayer().move(1,0);
                 monsterService.moveMonsters(map.getMonsters());
+                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 1, 0);
                 refresh();
                 break;
         }
