@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.MonsterService;
+import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -41,12 +42,14 @@ public class Main extends Application {
 
         addLabels();
         ui.add(pickUpItem, 0, 3);
+        hidePickUpButton();
         loadLabels();
 
         pickUpItem.setOnAction(actionEvent ->  {
             if(map.getPlayer().getCell().getItem() != null) {
                 map.getPlayer().getCell().getItem().pickUp(map.getPlayer());
             }
+            hidePickUpButton();
             loadLabels();
         });
 
@@ -71,11 +74,20 @@ public class Main extends Application {
         ui.add(inventoryLabel, 0, 2);
     }
 
+    public void showPickUpButton() {
+        pickUpItem.setVisible(true);
+    }
+
+    public void hidePickUpButton() {
+        pickUpItem.setVisible(false);
+    }
+
     public void loadLabels() {
         inventoryLabel.setText(" " + map.getPlayer().inventoryToString());
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
+        ActorMovementValidator validate = new ActorMovementValidator();
         switch (keyEvent.getCode()) {
             case W:
             case UP:
@@ -101,6 +113,12 @@ public class Main extends Application {
                 monsterService.moveMonsters(map.getMonsters());
                 refresh();
                 break;
+        }
+
+        if (validate.checkPlayerOnItem(map.getPlayer())) {
+            showPickUpButton();
+        } else {
+            hidePickUpButton();
         }
     }
 
