@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.data.actors;
 
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.items.Item;
+import com.codecool.dungeoncrawl.data.items.collectibles.Key;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,16 @@ public class Player extends Actor {
 
     public void addToInventory(Item item) {
         inventory.add(item);
+    }
+
+    public boolean hasKey() {
+        boolean hasKey = false;
+        for (Item item : inventory) {
+            if (item instanceof Key) {
+                hasKey = true;
+            }
+        }
+        return hasKey;
     }
 
     public String inventoryToString(){
