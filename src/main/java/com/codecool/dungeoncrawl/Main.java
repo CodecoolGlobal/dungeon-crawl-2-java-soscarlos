@@ -90,6 +90,7 @@ public class Main extends Application {
     }
 
     public void loadLabels() {
+        healthLabel.setText("" + map.getPlayer().getHealth());
         inventoryLabel.setText(" " + map.getPlayer().inventoryToString());
     }
 
@@ -136,9 +137,7 @@ public class Main extends Application {
 
         if (validate.checkPlayerOnItem(map.getPlayer())) {
             showPickUpButton();
-        } else {
-            hidePickUpButton();
-        }
+        } else hidePickUpButton();
     }
 
     private void refresh() {

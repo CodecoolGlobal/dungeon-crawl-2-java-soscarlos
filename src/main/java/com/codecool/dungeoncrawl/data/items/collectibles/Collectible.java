@@ -6,6 +6,10 @@ import com.codecool.dungeoncrawl.data.items.Item;
 
 public abstract class Collectible extends Item {
 
+    public Collectible(Cell cell) {
+        super(cell);
+    }
+
     @Override
     public void pickUp(Player player) {
         Item item = player.getCell().getItem();
@@ -13,9 +17,5 @@ public abstract class Collectible extends Item {
             player.addToInventory(item);
             player.getCell().setItem(null);
         }
-    }
-
-    public Collectible(Cell cell) {
-        super(cell);
     }
 }

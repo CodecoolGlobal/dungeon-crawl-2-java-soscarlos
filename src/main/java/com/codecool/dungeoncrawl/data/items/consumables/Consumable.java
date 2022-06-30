@@ -4,13 +4,29 @@ import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.items.Item;
 
+import java.util.Objects;
+
 public abstract class Consumable extends Item {
 
-    @Override
-    public void pickUp(Player player) {
-        //TODO: write pickUp method here
-    }
     public Consumable(Cell cell) {
         super(cell);
     }
+
+    @Override
+    public void pickUp(Player player) {
+        Item item = player.getCell().getItem();
+        if (item != null) {
+            player.addToInventory(item);
+            player.getCell().setItem(null);
+        }
+
+        if (Objects.equals(this.getType(), "health")) {
+            int currentHealth = player.getHealth();
+            player.setHealth(currentHealth + this.getBoost());
+        }
+    }
+
+    public abstract String getType();
+
+    public abstract int getBoost();
 }

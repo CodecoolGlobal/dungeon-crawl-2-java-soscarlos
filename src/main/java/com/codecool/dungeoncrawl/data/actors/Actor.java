@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.data.actors;
 
 import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.cells.Cell;
+import com.codecool.dungeoncrawl.data.cells.CellType;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 
 public abstract class Actor implements Drawable {
@@ -11,15 +12,13 @@ public abstract class Actor implements Drawable {
 
     private int attackStrength = 5;
 
-    private ActorMovementValidator validate;
-
     public Actor(Cell cell) {
         this.cell = cell;
         this.cell.setActor(this);
     }
 
     public void move(int dx, int dy) {
-        validate = new ActorMovementValidator();
+        ActorMovementValidator validate = new ActorMovementValidator();
         Cell nextCell = cell.getNeighbor(dx, dy);
         cell.setActor(null);
 
@@ -27,6 +26,10 @@ public abstract class Actor implements Drawable {
             nextCell.setActor(this);
             cell = nextCell;
         } else cell.setActor(this);
+
+        if (nextCell.getType() == CellType.CLOSED_DOOR && this.hasKey()) {
+            nextCell.setType(CellType.OPEN_DOOR);
+        }
     }
 
     public void attack(Actor enemy){
@@ -53,6 +56,8 @@ public abstract class Actor implements Drawable {
     public int getY() {
         return cell.getY();
     }
+
+    public boolean hasKey() {return false;}
 
     public void setAttackStrength(int attackStrength) {
         this.attackStrength = attackStrength;
