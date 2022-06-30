@@ -124,7 +124,7 @@ public class Main extends Application {
 
         playService.play(map, monsterService, playerService, dx, dy);
         refresh();
-        toggleButton();
+        togglePickUpButton();
     }
 
     private void refresh() {
@@ -147,7 +147,7 @@ public class Main extends Application {
         // map refresh own method
     }
 
-    private void toggleButton(){
+    private void togglePickUpButton(){
         if (validate.checkPlayerOnItem(map.getPlayer())) {
             showPickUpButton();
         } else hidePickUpButton();
