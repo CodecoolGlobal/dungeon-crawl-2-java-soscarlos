@@ -26,7 +26,7 @@ public class ActorMovementValidator {
         return enemy instanceof Player;
     }
 
-    public boolean playerIsNext(Actor monster) {
+    public boolean playerIsClose(Actor monster) {
         boolean playerIsNext = false;
         Cell monsterCell = monster.getCell();
         if (isPlayer(monsterCell, 0, -1) ||
