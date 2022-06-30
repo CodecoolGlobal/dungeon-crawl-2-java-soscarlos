@@ -27,6 +27,10 @@ public class Player extends Actor {
         return inventory;
     }
 
+    public void setInventory(ArrayList<Item> inventory) {
+        this.inventory = inventory;
+    }
+
     public void addToInventory(Item item) {
         inventory.add(item);
     }
@@ -42,7 +46,7 @@ public class Player extends Actor {
         return hasKey;
     }
 
-    public String inventoryToString(){
+    public String inventoryToString() {
         StringBuilder itemNames = new StringBuilder();
         for (Item item : inventory) {
             String name = item.getTileName().toUpperCase();
