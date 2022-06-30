@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.PlayService;
+import com.codecool.dungeoncrawl.logic.Tiles;
 import com.codecool.dungeoncrawl.logic.actors.MonsterService;
 import com.codecool.dungeoncrawl.logic.actors.PlayerService;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;

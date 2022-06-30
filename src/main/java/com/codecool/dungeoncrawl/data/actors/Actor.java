@@ -32,7 +32,7 @@ public abstract class Actor implements Drawable {
         }
     }
 
-    public void attack(Actor enemy){
+    public void attack(Actor enemy) {
         int enemyHealth = enemy.getHealth();
         enemy.setHealth(enemyHealth - this.attackStrength);
     }
@@ -57,13 +57,15 @@ public abstract class Actor implements Drawable {
         return cell.getY();
     }
 
-    public boolean hasKey() {return false;}
-
-    public void setAttackStrength(int attackStrength) {
-        this.attackStrength = attackStrength;
+    public boolean hasKey() {
+        return false;
     }
 
     public int getAttackStrength() {
         return attackStrength;
+    }
+
+    public void setAttackStrength(int attackStrength) {
+        this.attackStrength = attackStrength;
     }
 }

@@ -3,9 +3,6 @@ package com.codecool.dungeoncrawl.data.items;
 import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
-import com.codecool.dungeoncrawl.data.items.collectibles.Key;
-
-import java.util.ArrayList;
 
 public abstract class Item implements Drawable {
     private Cell cell;

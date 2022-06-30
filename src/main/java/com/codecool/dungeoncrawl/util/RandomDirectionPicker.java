@@ -1,9 +1,11 @@
-package com.codecool.dungeoncrawl.data.directions;
+package com.codecool.dungeoncrawl.util;
+
+import com.codecool.dungeoncrawl.data.directions.Direction;
 
 import java.util.Random;
 
 public class RandomDirectionPicker {
-    public Direction getRandomDirection(){
+    public static Direction getRandomDirection() {
         Random random = new Random();
         Direction[] values = Direction.values();
         return values[random.nextInt(values.length)];

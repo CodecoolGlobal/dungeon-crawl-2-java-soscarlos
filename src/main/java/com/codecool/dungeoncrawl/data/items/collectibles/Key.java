@@ -10,7 +10,7 @@ public class Key extends Collectible {
 
     @Override
     public String getType() {
-        return "";
+        return "mission";
     }
 
     @Override

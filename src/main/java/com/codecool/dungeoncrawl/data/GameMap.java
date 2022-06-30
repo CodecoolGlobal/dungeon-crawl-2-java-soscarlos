@@ -1,22 +1,21 @@
 package com.codecool.dungeoncrawl.data;
 
 import com.codecool.dungeoncrawl.data.actors.Actor;
+import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.cells.CellType;
-import com.codecool.dungeoncrawl.data.actors.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class GameMap {
-    private int width;
-    private int height;
-    private Cell[][] cells;
+    private final int width;
+    private final int height;
+    private final Cell[][] cells;
 
     private Player player;
 
-    private List<Actor> monsters;
+    private final List<Actor> monsters;
 
     public GameMap(int width, int height, CellType defaultCellType) {
         this.width = width;
@@ -34,12 +33,12 @@ public class GameMap {
         return cells[x][y];
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     public Player getPlayer() {
         return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public int getWidth() {
@@ -53,13 +52,15 @@ public class GameMap {
     public List<Actor> getMonsters() {
         return monsters;
     }
-    public void addMonster(Actor monster){
+
+    public void addMonster(Actor monster) {
         monsters.add(monster);
     }
-    public void removeMonster(){
+
+    public void removeMonster() {
         for (int i = 0; i < monsters.size(); i++) {
             Actor monster = monsters.get(i);
-            if (monster.getHealth() <= 0){
+            if (monster.getHealth() <= 0) {
                 monsters.remove(monster);
             }
         }

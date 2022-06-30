@@ -1,10 +1,8 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.data.actors.Actor;
-import com.codecool.dungeoncrawl.data.actors.Player;
-import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.directions.Direction;
-import com.codecool.dungeoncrawl.data.directions.RandomDirectionPicker;
+import com.codecool.dungeoncrawl.util.RandomDirectionPicker;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 
 import java.util.List;
@@ -13,8 +11,7 @@ public class MonsterService {
     Direction previousDirection = null;
 
     public void moveSkeleton(Actor skeleton) {
-        RandomDirectionPicker picker = new RandomDirectionPicker();
-        Direction direction = picker.getRandomDirection();
+        Direction direction = RandomDirectionPicker.getRandomDirection();
         moveNext(skeleton, direction);
     }
 

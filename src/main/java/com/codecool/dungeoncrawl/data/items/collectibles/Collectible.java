@@ -26,7 +26,9 @@ public abstract class Collectible extends Item {
         }
     }
 
-    public int getAttackBoost() {return 0;}
+    public int getAttackBoost() {
+        return 0;
+    }
 
     public abstract String getType();
 }

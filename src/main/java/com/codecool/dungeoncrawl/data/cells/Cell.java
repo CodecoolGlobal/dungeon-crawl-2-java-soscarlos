@@ -9,12 +9,10 @@ import com.codecool.dungeoncrawl.data.items.Item;
 public class Cell implements Drawable {
     private CellType type;
     private Actor actor;
-    private GameMap gameMap;
-    private Coordinates coordinates;
+    private final GameMap gameMap;
+    private final Coordinates coordinates;
 
     private Item item;
-
-    private boolean hasDrawableElement;
 
     public Cell(GameMap gameMap, int x, int y, CellType type) {
         this.gameMap = gameMap;
@@ -51,8 +49,7 @@ public class Cell implements Drawable {
     }
 
     public boolean hasDrawableElement(){
-        hasDrawableElement = getActor() != null || getItem() != null;
-        return hasDrawableElement;
+        return getActor() != null || getItem() != null;
     }
 
     public Drawable getDrawableElement(int x, int y){
