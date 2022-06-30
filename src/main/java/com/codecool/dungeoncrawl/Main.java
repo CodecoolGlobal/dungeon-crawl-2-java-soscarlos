@@ -3,6 +3,7 @@ package com.codecool.dungeoncrawl;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.PlayService;
 import com.codecool.dungeoncrawl.logic.actors.MonsterService;
 import com.codecool.dungeoncrawl.logic.actors.PlayerService;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
@@ -24,6 +25,7 @@ public class Main extends Application {
     MonsterService monsterService = new MonsterService();
 
     PlayerService playerService = new PlayerService();
+    PlayService playService = new PlayService();
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -97,44 +99,29 @@ public class Main extends Application {
 
     private void onKeyPressed(KeyEvent keyEvent) {
         ActorMovementValidator validate = new ActorMovementValidator();
+        int dx = 0;
+        int dy = 0;
         switch (keyEvent.getCode()) {
             case W:
             case UP:
-                map.getPlayer().move(0, -1);
-                monsterService.moveMonsters(map.getMonsters());
-                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, -1);
-                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
-                map.removeMonster();
-                refresh();
+                dy = -1;
                 break;
             case S:
             case DOWN:
-                map.getPlayer().move(0, 1);
-                monsterService.moveMonsters(map.getMonsters());
-                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, 1);
-                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
-                map.removeMonster();
-                refresh();
+                dy = 1;
                 break;
             case A:
             case LEFT:
-                map.getPlayer().move(-1, 0);
-                monsterService.moveMonsters(map.getMonsters());
-                playerService.attackMonster(map.getMonsters(), map.getPlayer(), -1, 0);
-                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
-                map.removeMonster();
-                refresh();
+                dx = -1;
                 break;
             case D:
             case RIGHT:
-                map.getPlayer().move(1, 0);
-                monsterService.moveMonsters(map.getMonsters());
-                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 1, 0);
-                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
-                map.removeMonster();
-                refresh();
+                dx = 1;
                 break;
         }
+
+        playService.play(map, monsterService, playerService, dx, dy);
+        refresh();
 
         if (validate.checkPlayerOnItem(map.getPlayer())) {
             showPickUpButton();
