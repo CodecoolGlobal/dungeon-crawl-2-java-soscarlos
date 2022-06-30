@@ -1,9 +1,10 @@
 package com.codecool.dungeoncrawl;
 
-import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.GameMap;
+import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.MonsterService;
+import com.codecool.dungeoncrawl.logic.PlayerService;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -21,6 +22,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
     MonsterService monsterService = new MonsterService();
+
+    PlayerService playerService = new PlayerService();
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -28,6 +31,8 @@ public class Main extends Application {
     GridPane ui = new GridPane();
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
+
+    Label strengthLabel = new Label();
     Button pickUpItem = new Button("Pick up!");
 
     public static void main(String[] args) {
@@ -45,8 +50,8 @@ public class Main extends Application {
         hidePickUpButton();
         loadLabels();
 
-        pickUpItem.setOnAction(actionEvent ->  {
-            if(map.getPlayer().getCell().getItem() != null) {
+        pickUpItem.setOnAction(actionEvent -> {
+            if (map.getPlayer().getCell().getItem() != null) {
                 map.getPlayer().getCell().getItem().pickUp(map.getPlayer());
             }
             hidePickUpButton();
@@ -70,8 +75,10 @@ public class Main extends Application {
     private void addLabels() {
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
-        ui.add(new Label("\nInventory:"), 0, 1);
-        ui.add(inventoryLabel, 0, 2);
+        ui.add(new Label("Strength: "), 0, 1);
+        ui.add(strengthLabel, 1, 1);
+        ui.add(new Label("\nInventory: "), 0, 2);
+        ui.add(inventoryLabel, 0, 3);
     }
 
     public void showPickUpButton() {
@@ -94,24 +101,36 @@ public class Main extends Application {
             case UP:
                 map.getPlayer().move(0, -1);
                 monsterService.moveMonsters(map.getMonsters());
+                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, -1);
+                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
+                map.removeMonster();
                 refresh();
                 break;
             case S:
             case DOWN:
                 map.getPlayer().move(0, 1);
                 monsterService.moveMonsters(map.getMonsters());
+                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, 1);
+                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
+                map.removeMonster();
                 refresh();
                 break;
             case A:
             case LEFT:
                 map.getPlayer().move(-1, 0);
                 monsterService.moveMonsters(map.getMonsters());
+                playerService.attackMonster(map.getMonsters(), map.getPlayer(), -1, 0);
+                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
+                map.removeMonster();
                 refresh();
                 break;
             case D:
             case RIGHT:
-                map.getPlayer().move(1,0);
+                map.getPlayer().move(1, 0);
                 monsterService.moveMonsters(map.getMonsters());
+                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 1, 0);
+                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
+                map.removeMonster();
                 refresh();
                 break;
         }
@@ -137,6 +156,7 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+        strengthLabel.setText("" + map.getPlayer().getAttackStrength());
         // make separate method for this,
         // playerStats refresh method,
         // map refresh own method

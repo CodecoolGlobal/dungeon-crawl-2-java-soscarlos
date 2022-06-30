@@ -10,7 +10,7 @@ public abstract class Actor implements Drawable {
 
     private int health = 10;
 
-    private int attackStrength = 10;
+    private int attackStrength = 5;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -30,6 +30,11 @@ public abstract class Actor implements Drawable {
         if (nextCell.getType() == CellType.CLOSED_DOOR && this.hasKey()) {
             nextCell.setType(CellType.OPEN_DOOR);
         }
+    }
+
+    public void attack(Actor enemy){
+        int enemyHealth = enemy.getHealth();
+        enemy.setHealth(enemyHealth - this.attackStrength);
     }
 
     public int getHealth() {
