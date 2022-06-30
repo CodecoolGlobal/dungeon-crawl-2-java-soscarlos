@@ -14,9 +14,10 @@ public class ActorMovementValidator {
 
         boolean floor = nextType == CellType.FLOOR && actor == null;
         boolean openDoor = nextType == CellType.OPEN_DOOR;
-        boolean stairs = nextType == CellType.STAIRS_DOWN;
+        boolean stairsDown = nextType == CellType.STAIRS_DOWN;
+        boolean stairs = nextType == CellType.STAIRS;
 
-        return floor || openDoor || stairs;
+        return floor || openDoor || stairsDown || stairs;
     }
 
     public boolean checkPlayerOnItem(Player player) {

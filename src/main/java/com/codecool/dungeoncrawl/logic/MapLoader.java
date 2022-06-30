@@ -78,9 +78,22 @@ public class MapLoader {
                         case 'D':
                             cell.setType(CellType.STAIRS_DOWN);
                             break;
+                        case 'S':
+                            cell.setType(CellType.STAIRS);
+                            break;
                         case 'b':
                             cell.setType(CellType.FLOOR);
                             new Bazooka(cell);
+                            break;
+                        case 'W':
+                            cell.setType(CellType.WATER);
+                            break;
+                        case 'x':
+                            cell.setType(CellType.TORCH);
+                            break;
+                        case 'F':
+                            cell.setType(CellType.FLOOR);
+                            new Steak(cell);
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
