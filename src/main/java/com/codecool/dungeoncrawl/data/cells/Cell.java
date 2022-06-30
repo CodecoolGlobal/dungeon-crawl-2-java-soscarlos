@@ -55,6 +55,15 @@ public class Cell implements Drawable {
         return hasDrawableElement;
     }
 
+    public Drawable getDrawableElement(int x, int y){
+        if (gameMap.getCell(x, y).getActor() != null){
+            return getActor();
+        } else if (gameMap.getCell(x, y).getItem() != null) {
+            return getItem();
+        }
+        return null;
+    }
+
     @Override
     public String getTileName() {
         return type.getTileName();

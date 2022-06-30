@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl;
 
+import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.logic.MapLoader;
@@ -26,6 +27,7 @@ public class Main extends Application {
 
     PlayerService playerService = new PlayerService();
     PlayService playService = new PlayService();
+    ActorMovementValidator validate = new ActorMovementValidator();
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -98,7 +100,6 @@ public class Main extends Application {
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
-        ActorMovementValidator validate = new ActorMovementValidator();
         int dx = 0;
         int dy = 0;
         switch (keyEvent.getCode()) {
@@ -122,10 +123,7 @@ public class Main extends Application {
 
         playService.play(map, monsterService, playerService, dx, dy);
         refresh();
-
-        if (validate.checkPlayerOnItem(map.getPlayer())) {
-            showPickUpButton();
-        } else hidePickUpButton();
+        toggleButton();
     }
 
     private void refresh() {
@@ -134,10 +132,9 @@ public class Main extends Application {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
-                if (cell.getActor() != null) {
-                    Tiles.drawTile(context, cell.getActor(), x, y);
-                } else if (cell.getItem() != null) {
-                    Tiles.drawTile(context, cell.getItem(), x, y);
+                if (cell.hasDrawableElement()){
+                    Drawable drawable = cell.getDrawableElement(x, y);
+                    Tiles.drawTile(context, drawable, x, y);
                 } else {
                     Tiles.drawTile(context, cell, x, y);
                 }
@@ -147,5 +144,11 @@ public class Main extends Application {
         // make separate method for this,
         // playerStats refresh method,
         // map refresh own method
+    }
+
+    private void toggleButton(){
+        if (validate.checkPlayerOnItem(map.getPlayer())) {
+            showPickUpButton();
+        } else hidePickUpButton();
     }
 }
