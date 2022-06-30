@@ -152,7 +152,6 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("Health: " + map.getPlayer().getHealth());
-
     }
 
     private void toggleButton() {
