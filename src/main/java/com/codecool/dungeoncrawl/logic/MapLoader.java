@@ -78,6 +78,10 @@ public class MapLoader {
                         case 'D':
                             cell.setType(CellType.STAIRS_DOWN);
                             break;
+                        case 'b':
+                            cell.setType(CellType.FLOOR);
+                            new Bazooka(cell);
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }
