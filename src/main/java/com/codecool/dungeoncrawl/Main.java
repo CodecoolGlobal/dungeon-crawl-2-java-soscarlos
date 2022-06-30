@@ -1,10 +1,13 @@
 package com.codecool.dungeoncrawl;
 
+import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.MonsterService;
-import com.codecool.dungeoncrawl.logic.PlayerService;
+import com.codecool.dungeoncrawl.logic.PlayService;
+import com.codecool.dungeoncrawl.logic.Tiles;
+import com.codecool.dungeoncrawl.logic.actors.MonsterService;
+import com.codecool.dungeoncrawl.logic.actors.PlayerService;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -24,6 +27,8 @@ public class Main extends Application {
     MonsterService monsterService = new MonsterService();
 
     PlayerService playerService = new PlayerService();
+    PlayService playService = new PlayService();
+    ActorMovementValidator validate = new ActorMovementValidator();
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -46,7 +51,7 @@ public class Main extends Application {
         pickUpItem.setFocusTraversable(false);
 
         addLabels();
-        ui.add(pickUpItem, 0, 3);
+        ui.add(pickUpItem, 0, 4);
         hidePickUpButton();
         loadLabels();
 
@@ -91,53 +96,35 @@ public class Main extends Application {
 
     public void loadLabels() {
         healthLabel.setText("" + map.getPlayer().getHealth());
+        strengthLabel.setText("" + map.getPlayer().getAttackStrength());
         inventoryLabel.setText("" + map.getPlayer().inventoryToString());
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
-        ActorMovementValidator validate = new ActorMovementValidator();
+        int dx = 0;
+        int dy = 0;
         switch (keyEvent.getCode()) {
             case W:
             case UP:
-                map.getPlayer().move(0, -1);
-                monsterService.moveMonsters(map.getMonsters());
-                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, -1);
-                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
-                map.removeMonster();
-                refresh();
+                dy = -1;
                 break;
             case S:
             case DOWN:
-                map.getPlayer().move(0, 1);
-                monsterService.moveMonsters(map.getMonsters());
-                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 0, 1);
-                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
-                map.removeMonster();
-                refresh();
+                dy = 1;
                 break;
             case A:
             case LEFT:
-                map.getPlayer().move(-1, 0);
-                monsterService.moveMonsters(map.getMonsters());
-                playerService.attackMonster(map.getMonsters(), map.getPlayer(), -1, 0);
-                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
-                map.removeMonster();
-                refresh();
+                dx = -1;
                 break;
             case D:
             case RIGHT:
-                map.getPlayer().move(1, 0);
-                monsterService.moveMonsters(map.getMonsters());
-                playerService.attackMonster(map.getMonsters(), map.getPlayer(), 1, 0);
-                monsterService.attackPlayer(map.getMonsters(), map.getPlayer());
-                map.removeMonster();
-                refresh();
+                dx = 1;
                 break;
         }
 
-        if (validate.checkPlayerOnItem(map.getPlayer())) {
-            showPickUpButton();
-        } else hidePickUpButton();
+        playService.play(map, monsterService, playerService, dx, dy);
+        refresh();
+        toggleButton();
     }
 
     private void refresh() {
@@ -146,19 +133,23 @@ public class Main extends Application {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
-                if (cell.getActor() != null) {
-                    Tiles.drawTile(context, cell.getActor(), x, y);
-                } else if (cell.getItem() != null) {
-                    Tiles.drawTile(context, cell.getItem(), x, y);
+                if (cell.hasDrawableElement()){
+                    Drawable drawable = cell.getDrawableElement(x, y);
+                    Tiles.drawTile(context, drawable, x, y);
                 } else {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
-        strengthLabel.setText("" + map.getPlayer().getAttackStrength());
         // make separate method for this,
         // playerStats refresh method,
         // map refresh own method
+    }
+
+    private void toggleButton(){
+        if (validate.checkPlayerOnItem(map.getPlayer())) {
+            showPickUpButton();
+        } else hidePickUpButton();
     }
 }
