@@ -24,7 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    String currentMap = Maps.mapTwo;
+    String currentMap = Maps.mapOne;
     GameMap map = MapLoader.loadMap(currentMap);
     MonsterService monsterService = new MonsterService();
 

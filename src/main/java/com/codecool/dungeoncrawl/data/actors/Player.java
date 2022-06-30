@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class Player extends Actor {
     private ArrayList<Item> inventory;
+
     public Player(Cell cell) {
         super(cell);
         initialPlayerStats();
