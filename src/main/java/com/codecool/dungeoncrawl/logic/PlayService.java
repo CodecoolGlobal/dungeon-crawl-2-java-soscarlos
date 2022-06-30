@@ -8,10 +8,9 @@ public class PlayService {
 
     public void play(GameMap map, MonsterService monster, PlayerService player, int dx, int dy) {
         map.getPlayer().move(dx, dy);
-        monster.moveMonsters(map.getMonsters());
+        monster.moveMonsters(map.getMonsters(), map.getPlayer());
 
         player.attackMonster(map.getMonsters(), map.getPlayer(), dx, dy);
-        monster.attackPlayer(map.getMonsters(), map.getPlayer());
 
         map.removeMonster();
     }

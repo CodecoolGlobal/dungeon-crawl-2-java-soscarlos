@@ -7,7 +7,7 @@ import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 import java.util.List;
 
 public class PlayerService {
-    // TODO: Place movement method of player here
+
     public void attackMonster(List<Actor> monsters, Actor actor, int dx, int dy) {
         ActorMovementValidator valid = new ActorMovementValidator();
         Cell playerCell = actor.getCell();
