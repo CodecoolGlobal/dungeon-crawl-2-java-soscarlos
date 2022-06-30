@@ -2,7 +2,10 @@ package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.GameMap;
+import com.codecool.dungeoncrawl.data.Maps;
+import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
+import com.codecool.dungeoncrawl.data.items.Item;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.PlayService;
 import com.codecool.dungeoncrawl.logic.Tiles;
@@ -22,8 +25,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap();
+    String currentMap = Maps.mapOne;
+    GameMap map = MapLoader.loadMap(currentMap);
     MonsterService monsterService = new MonsterService();
 
     PlayerService playerService = new PlayerService();
@@ -124,7 +130,24 @@ public class Main extends Application {
 
         playService.play(map, monsterService, playerService, dx, dy);
         refresh();
-        toggleButton();
+        togglePickUpButton();
+
+        if (map.getPlayer().getLevel() == 2) {
+            currentMap = Maps.mapTwo;
+            ArrayList<Item> inventory = map.getPlayer().getInventory();
+            loadNewMap(currentMap, inventory);
+        }
+    }
+
+    private void loadNewMap(String newMap, ArrayList<Item> inventory) {
+        int health = map.getPlayer().getHealth();
+        int strength = map.getPlayer().getAttackStrength();
+        map = MapLoader.loadMap(newMap);
+        map.getPlayer().setHealth(health);
+        map.getPlayer().setAttackStrength(strength);
+        map.getPlayer().setInventory(inventory);
+        refresh();
+        loadLabels();
     }
 
     private void refresh() {
@@ -147,7 +170,7 @@ public class Main extends Application {
         // map refresh own method
     }
 
-    private void toggleButton(){
+    private void togglePickUpButton(){
         if (validate.checkPlayerOnItem(map.getPlayer())) {
             showPickUpButton();
         } else hidePickUpButton();
