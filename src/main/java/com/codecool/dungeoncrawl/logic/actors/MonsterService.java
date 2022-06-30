@@ -68,8 +68,12 @@ public class MonsterService {
     public void tryAttackPlayer(Actor monster, Player player, int dx, int dy){
         ActorMovementValidator validator = new ActorMovementValidator();
         Cell monsterCell = monster.getCell();
+        Cell playerCell = player.getCell();
         if (validator.isPlayer(monsterCell, dx, dy)){
             monster.attack(player);
+            if (player.getHealth() == 0){
+                playerCell.setActor(null);
+            }
         }
 
     }

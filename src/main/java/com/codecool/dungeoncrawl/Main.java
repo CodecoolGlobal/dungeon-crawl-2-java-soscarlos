@@ -19,8 +19,12 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.util.Scanner;
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -36,7 +40,6 @@ public class Main extends Application {
     GridPane ui = new GridPane();
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
-
     Label strengthLabel = new Label();
     Button pickUpItem = new Button("Pick up!");
 
@@ -72,7 +75,6 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         refresh();
         scene.setOnKeyPressed(this::onKeyPressed);
-
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
     }
