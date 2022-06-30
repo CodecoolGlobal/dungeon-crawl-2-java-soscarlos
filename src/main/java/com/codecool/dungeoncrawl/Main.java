@@ -91,7 +91,7 @@ public class Main extends Application {
 
     public void loadLabels() {
         healthLabel.setText("" + map.getPlayer().getHealth());
-        inventoryLabel.setText(" " + map.getPlayer().inventoryToString());
+        inventoryLabel.setText("" + map.getPlayer().inventoryToString());
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {

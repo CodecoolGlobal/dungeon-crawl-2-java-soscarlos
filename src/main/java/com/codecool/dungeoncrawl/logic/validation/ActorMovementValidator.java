@@ -35,7 +35,6 @@ public class ActorMovementValidator {
                 isPlayer(monsterCell, 1, 0)) {
             playerIsNext = true;
         }
-        System.out.println("is player next? "+playerIsNext);
         return playerIsNext;
     }
 

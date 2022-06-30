@@ -34,6 +34,7 @@ public class MonsterService {
                 directionX = 1;
                 break;
         }
+        // TODO here i can add the check for the player
         monster.move(directionX, directionY);
     }
 
