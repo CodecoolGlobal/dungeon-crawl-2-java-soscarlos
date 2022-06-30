@@ -71,7 +71,7 @@ public class MonsterService {
         Cell playerCell = player.getCell();
         if (validator.isPlayer(monsterCell, dx, dy)){
             monster.attack(player);
-            if (player.getHealth() == 0){
+            if (player.isDead()){
                 playerCell.setActor(null);
             }
         }

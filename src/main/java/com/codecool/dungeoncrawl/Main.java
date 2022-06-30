@@ -19,12 +19,8 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.util.Scanner;
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -41,6 +37,7 @@ public class Main extends Application {
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
     Label strengthLabel = new Label();
+    Label gameOver = new Label();
     Button pickUpItem = new Button("Pick up!");
 
     public static void main(String[] args) {
@@ -80,12 +77,10 @@ public class Main extends Application {
     }
 
     private void addLabels() {
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
-        ui.add(new Label("Strength: "), 0, 1);
-        ui.add(strengthLabel, 1, 1);
-        ui.add(new Label("\nInventory: "), 0, 2);
+        ui.add(healthLabel, 0, 0);
+        ui.add(strengthLabel, 0, 1);
         ui.add(inventoryLabel, 0, 3);
+        ui.add(gameOver, 0, 10);
     }
 
     public void showPickUpButton() {
@@ -97,14 +92,27 @@ public class Main extends Application {
     }
 
     public void loadLabels() {
-        healthLabel.setText("" + map.getPlayer().getHealth());
-        strengthLabel.setText("" + map.getPlayer().getAttackStrength());
-        inventoryLabel.setText("" + map.getPlayer().inventoryToString());
+        if (map.getPlayer().isDead()){
+            gameOver.setText("YOU ARE DEAD!");
+            healthLabel.setText("");
+            strengthLabel.setText("");
+            inventoryLabel.setText("");
+        } else {
+            healthLabel.setText("Health: " + map.getPlayer().getHealth());
+            strengthLabel.setText("\nStrength: " + map.getPlayer().getAttackStrength());
+            inventoryLabel.setText("\nInventory: \n" + map.getPlayer().inventoryToString());
+        }
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
         int dx = 0;
         int dy = 0;
+
+        if (map.getPlayer().isDead()) {
+            loadLabels();
+            return;
+        }
+
         switch (keyEvent.getCode()) {
             case W:
             case UP:
@@ -135,7 +143,7 @@ public class Main extends Application {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
-                if (cell.hasDrawableElement()){
+                if (cell.hasDrawableElement()) {
                     Drawable drawable = cell.getDrawableElement(x, y);
                     Tiles.drawTile(context, drawable, x, y);
                 } else {
@@ -143,13 +151,11 @@ public class Main extends Application {
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().getHealth());
-        // make separate method for this,
-        // playerStats refresh method,
-        // map refresh own method
+        healthLabel.setText("Health: " + map.getPlayer().getHealth());
+
     }
 
-    private void toggleButton(){
+    private void toggleButton() {
         if (validate.checkPlayerOnItem(map.getPlayer())) {
             showPickUpButton();
         } else hidePickUpButton();
