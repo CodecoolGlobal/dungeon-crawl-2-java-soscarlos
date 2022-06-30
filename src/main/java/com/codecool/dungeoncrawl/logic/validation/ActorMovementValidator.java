@@ -19,4 +19,27 @@ public class ActorMovementValidator {
         Item item = player.getCell().getItem();
         return item != null;
     }
+
+    public boolean isPlayer(Cell cell, int dx, int dy) {
+        Cell nextCell = cell.getNeighbor(dx, dy);
+        Actor enemy = nextCell.getActor();
+        return enemy instanceof Player;
+    }
+
+    public boolean playerIsNext(Actor monster) {
+        boolean playerIsNext = false;
+        Cell monsterCell = monster.getCell();
+        if (isPlayer(monsterCell, 0, -1) ||
+                isPlayer(monsterCell, 0, 1) ||
+                isPlayer(monsterCell, -1, 0) ||
+                isPlayer(monsterCell, 1, 0)) {
+            playerIsNext = true;
+        }
+        System.out.println("is player next? "+playerIsNext);
+        return playerIsNext;
+    }
+
+    public boolean monsterIsNext(Cell playerCell, Cell monsterCell, int dx, int dy) {
+        return playerCell.getNeighbor(dx, dy) == monsterCell;
+    }
 }

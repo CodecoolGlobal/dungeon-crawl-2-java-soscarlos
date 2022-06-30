@@ -1,8 +1,11 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.data.actors.Actor;
+import com.codecool.dungeoncrawl.data.actors.Player;
+import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.directions.Direction;
 import com.codecool.dungeoncrawl.data.directions.RandomDirectionPicker;
+import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 
 import java.util.List;
 
@@ -60,6 +63,12 @@ public class MonsterService {
             } else if (monster.getTileName().equals("demon")) {
                 moveDemon(monster);
             }
+        }
+    }
+    public void attackPlayer(List<Actor> monsters, Actor player){
+        ActorMovementValidator validator = new ActorMovementValidator();
+        for(Actor monster: monsters){
+            if (validator.playerIsNext(monster)) monster.attack(player);
         }
     }
 }

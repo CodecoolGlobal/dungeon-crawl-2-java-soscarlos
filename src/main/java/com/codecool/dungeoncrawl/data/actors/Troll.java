@@ -5,7 +5,7 @@ import com.codecool.dungeoncrawl.data.cells.Cell;
 public class Troll extends Actor{
     public Troll(Cell cell) {
         super(cell);
-        setAttackStrength(20);
+        setAttackStrength(5);
         setHealth(20);
     }
     @Override

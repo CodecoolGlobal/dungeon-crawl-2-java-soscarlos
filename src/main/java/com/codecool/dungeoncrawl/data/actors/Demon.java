@@ -6,7 +6,7 @@ public class Demon extends Actor {
     public Demon(Cell cell) {
         super(cell);
         setHealth(15);
-        setAttackStrength(15);
+        setAttackStrength(3);
     }
     @Override
     public String getTileName() {
