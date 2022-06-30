@@ -46,7 +46,7 @@ public class Main extends Application {
         pickUpItem.setFocusTraversable(false);
 
         addLabels();
-        ui.add(pickUpItem, 0, 3);
+        ui.add(pickUpItem, 0, 4);
         hidePickUpButton();
         loadLabels();
 
@@ -91,6 +91,7 @@ public class Main extends Application {
 
     public void loadLabels() {
         healthLabel.setText("" + map.getPlayer().getHealth());
+        strengthLabel.setText("" + map.getPlayer().getAttackStrength());
         inventoryLabel.setText("" + map.getPlayer().inventoryToString());
     }
 
@@ -156,7 +157,6 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
-        strengthLabel.setText("" + map.getPlayer().getAttackStrength());
         // make separate method for this,
         // playerStats refresh method,
         // map refresh own method
