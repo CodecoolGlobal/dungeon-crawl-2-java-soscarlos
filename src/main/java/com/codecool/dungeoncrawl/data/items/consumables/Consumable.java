@@ -16,7 +16,6 @@ public abstract class Consumable extends Item {
     public void pickUp(Player player) {
         Item item = player.getCell().getItem();
         if (item != null) {
-            player.addToInventory(item);
             player.getCell().setItem(null);
         }
 

@@ -9,6 +9,7 @@ public abstract class Actor implements Drawable {
     private Cell cell;
 
     private int health = 10;
+    private int level = 1;
 
     private int attackStrength = 5;
 
@@ -30,6 +31,11 @@ public abstract class Actor implements Drawable {
         if (nextCell.getType() == CellType.CLOSED_DOOR && this.hasKey()) {
             nextCell.setType(CellType.OPEN_DOOR);
         }
+
+        if (nextCell.getType() == CellType.STAIRS_DOWN && this instanceof Player) {
+            setLevel(getLevel() + 1);
+            System.out.println(getLevel());
+        }
     }
 
     public void attack(Actor enemy) {
@@ -43,6 +49,14 @@ public abstract class Actor implements Drawable {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public Cell getCell() {

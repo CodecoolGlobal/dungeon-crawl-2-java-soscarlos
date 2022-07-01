@@ -12,7 +12,12 @@ public class ActorMovementValidator {
         CellType nextType = nextCell.getType();
         Actor actor = nextCell.getActor();
 
-        return nextType == CellType.FLOOR && actor == null;
+        boolean floor = nextType == CellType.FLOOR && actor == null;
+        boolean openDoor = nextType == CellType.OPEN_DOOR;
+        boolean stairsDown = nextType == CellType.STAIRS_DOWN;
+        boolean stairs = nextType == CellType.STAIRS;
+
+        return floor || openDoor || stairsDown || stairs;
     }
 
     public boolean checkPlayerOnItem(Player player) {

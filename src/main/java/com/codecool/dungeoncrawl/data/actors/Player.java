@@ -28,6 +28,10 @@ public class Player extends Actor {
         return inventory;
     }
 
+    public void setInventory(ArrayList<Item> inventory) {
+        this.inventory = inventory;
+    }
+
     public void addToInventory(Item item) {
         inventory.add(item);
     }
