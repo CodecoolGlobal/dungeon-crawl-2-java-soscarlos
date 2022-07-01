@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.data.items.collectibles.Key;
 import java.util.ArrayList;
 
 public class Player extends Actor {
+
     private ArrayList<Item> inventory;
 
     public Player(Cell cell) {
@@ -53,5 +54,9 @@ public class Player extends Actor {
             itemNames.append("o " + name + "\n");
         }
         return itemNames.toString();
+    }
+
+    public boolean isDead() {
+        return this.getHealth() <= 0;
     }
 }

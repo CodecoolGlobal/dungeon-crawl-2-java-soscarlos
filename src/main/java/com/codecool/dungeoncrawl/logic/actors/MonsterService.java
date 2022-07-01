@@ -48,6 +48,14 @@ public class MonsterService {
         }
     }
 
+    public void moveTroll(Actor troll, Player player){
+        ActorMovementValidator validator = new ActorMovementValidator();
+        if (validator.playerIsClose(troll)){
+            Direction direction = RandomDirectionPicker.getRandomDirection();
+            moveNext(troll, player, direction);
+        }
+    }
+
     private Direction getDirection(Direction[] values) {
         int nextIndex = previousDirection.ordinal() + 1;
         if (nextIndex >= values.length) {
@@ -62,15 +70,20 @@ public class MonsterService {
                 moveSkeleton(monster, player);
             } else if (monster.getTileName().equals("demon")) {
                 moveDemon(monster, player);
+            } else if (monster.getTileName().equals("troll")) {
+                moveTroll(monster, player);
             }
         }
     }
     public void tryAttackPlayer(Actor monster, Player player, int dx, int dy){
         ActorMovementValidator validator = new ActorMovementValidator();
         Cell monsterCell = monster.getCell();
+        Cell playerCell = player.getCell();
         if (validator.isPlayer(monsterCell, dx, dy)){
             monster.attack(player);
+            if (player.isDead()){
+                playerCell.setActor(null);
+            }
         }
-
     }
 }

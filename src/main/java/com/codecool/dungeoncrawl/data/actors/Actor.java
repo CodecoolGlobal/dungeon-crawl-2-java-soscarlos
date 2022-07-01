@@ -40,7 +40,7 @@ public abstract class Actor implements Drawable {
 
     public void attack(Actor enemy) {
         int enemyHealth = enemy.getHealth();
-        enemy.setHealth(enemyHealth - this.attackStrength);
+        if (enemy.getHealth() >= 0) enemy.setHealth(enemyHealth - this.attackStrength);
     }
 
     public int getHealth() {
