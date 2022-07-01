@@ -34,7 +34,6 @@ public abstract class Actor implements Drawable {
 
         if (nextCell.getType() == CellType.STAIRS_DOWN && this instanceof Player) {
             setLevel(getLevel() + 1);
-            System.out.println(getLevel());
         }
     }
 
