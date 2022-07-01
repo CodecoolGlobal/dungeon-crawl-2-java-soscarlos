@@ -58,11 +58,6 @@ public class GameMap {
     }
 
     public void removeMonster() {
-        for (int i = 0; i < monsters.size(); i++) {
-            Actor monster = monsters.get(i);
-            if (monster.getHealth() <= 0) {
-                monsters.remove(monster);
-            }
-        }
+        monsters.removeIf(monster -> monster.getHealth() <= 0);
     }
 }
