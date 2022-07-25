@@ -1,15 +1,24 @@
 package com.codecool.dungeoncrawl;
 
+
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
-import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.data.Drawable;
+import com.codecool.dungeoncrawl.data.GameMap;
+import com.codecool.dungeoncrawl.data.Maps;
+import com.codecool.dungeoncrawl.data.cells.Cell;
+import com.codecool.dungeoncrawl.data.items.Item;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.PlayService;
+import com.codecool.dungeoncrawl.logic.Tiles;
+import com.codecool.dungeoncrawl.logic.actors.MonsterService;
+import com.codecool.dungeoncrawl.logic.actors.PlayerService;
+import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -21,15 +30,26 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap();
+    String currentMap = Maps.mapOne;
+    GameMap map = MapLoader.loadMap(currentMap);
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
-    Label healthLabel = new Label();
+    MonsterService monsterService = new MonsterService();
+    PlayerService playerService = new PlayerService();
+    PlayService playService = new PlayService();
+    ActorMovementValidator validate = new ActorMovementValidator();
     GameDatabaseManager dbManager;
+    GridPane ui = new GridPane();
+    Label healthLabel = new Label();
+    Label inventoryLabel = new Label();
+    Label strengthLabel = new Label();
+    Label gameOver = new Label();
+    Button pickUpItem = new Button("Pick up!");
 
     public static void main(String[] args) {
         launch(args);
@@ -37,13 +57,25 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         setupDbManager();
-        GridPane ui = new GridPane();
+
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
+        pickUpItem.setFocusTraversable(false);
 
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
+        addLabels();
+        ui.add(pickUpItem, 0, 4);
+        hidePickUpButton();
+        loadLabels();
+
+        pickUpItem.setOnAction(actionEvent -> {
+            if (map.getPlayer().getCell().getItem() != null) {
+                map.getPlayer().getCell().getItem().pickUp(map.getPlayer());
+            }
+            hidePickUpButton();
+            loadLabels();
+        });
 
         BorderPane borderPane = new BorderPane();
 
@@ -54,6 +86,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         refresh();
         scene.setOnKeyPressed(this::onKeyPressed);
+
         scene.setOnKeyReleased(this::onKeyReleased);
 
         primaryStage.setTitle("Dungeon Crawl");
@@ -70,29 +103,82 @@ public class Main extends Application {
         }
     }
 
+    private void addLabels() {
+        ui.add(healthLabel, 0, 0);
+        ui.add(strengthLabel, 0, 1);
+        ui.add(inventoryLabel, 0, 3);
+        ui.add(gameOver, 0, 10);
+    }
+
+    public void showPickUpButton() {
+        pickUpItem.setVisible(true);
+    }
+
+    public void hidePickUpButton() {
+        pickUpItem.setVisible(false);
+    }
+
+    public void loadLabels() {
+        if (map.getPlayer().isDead()) {
+            gameOver.setText("YOU ARE DEAD!");
+            healthLabel.setText("");
+            strengthLabel.setText("");
+            inventoryLabel.setText("");
+        } else {
+            healthLabel.setText("Health: " + map.getPlayer().getHealth());
+            strengthLabel.setText("\nStrength: " + map.getPlayer().getAttackStrength());
+            inventoryLabel.setText("\nInventory: \n" + map.getPlayer().inventoryToString());
+        }
+    }
+
     private void onKeyPressed(KeyEvent keyEvent) {
+        int dx = 0;
+        int dy = 0;
+
+        if (map.getPlayer().isDead()) {
+            loadLabels();
+            return;
+        }
+
         switch (keyEvent.getCode()) {
+            case W:
             case UP:
-                map.getPlayer().move(0, -1);
-                refresh();
-                break;
-            case DOWN:
-                map.getPlayer().move(0, 1);
-                refresh();
-                break;
-            case LEFT:
-                map.getPlayer().move(-1, 0);
-                refresh();
-                break;
-            case RIGHT:
-                map.getPlayer().move(1, 0);
-                refresh();
+                dy = -1;
                 break;
             case S:
-                Player player = map.getPlayer();
-                dbManager.savePlayer(player);
+            case DOWN:
+                dy = 1;
+                break;
+            case A:
+            case LEFT:
+                dx = -1;
+                break;
+            case D:
+            case RIGHT:
+                dx = 1;
                 break;
         }
+
+        playService.play(map, monsterService, playerService, dx, dy);
+        refresh();
+        togglePickUpButton();
+
+        if (map.getPlayer().getLevel() == 2) {
+            currentMap = Maps.mapTwo;
+            ArrayList<Item> inventory = map.getPlayer().getInventory();
+            loadNewMap(currentMap, inventory);
+        }
+    }
+
+    private void loadNewMap(String newMap, ArrayList<Item> inventory) {
+        int health = map.getPlayer().getHealth();
+        int strength = map.getPlayer().getAttackStrength();
+        map = MapLoader.loadMap(newMap);
+        map.getPlayer().setHealth(health);
+        map.getPlayer().setAttackStrength(strength);
+        map.getPlayer().setInventory(inventory);
+        refresh();
+        loadLabels();
     }
 
     private void refresh() {
@@ -101,14 +187,16 @@ public class Main extends Application {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
-                if (cell.getActor() != null) {
-                    Tiles.drawTile(context, cell.getActor(), x, y);
+                if (cell.hasDrawableElement()) {
+                    Drawable drawable = cell.getDrawableElement(x, y);
+                    Tiles.drawTile(context, drawable, x, y);
+
                 } else {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().getHealth());
+        healthLabel.setText("Health: " + map.getPlayer().getHealth());
     }
 
     private void setupDbManager() {
@@ -127,5 +215,12 @@ public class Main extends Application {
             System.exit(1);
         }
         System.exit(0);
+        healthLabel.setText("Health: " + map.getPlayer().getHealth());
+    }
+
+    private void togglePickUpButton() {
+        if (validate.checkPlayerOnItem(map.getPlayer())) {
+            showPickUpButton();
+        } else hidePickUpButton();
     }
 }

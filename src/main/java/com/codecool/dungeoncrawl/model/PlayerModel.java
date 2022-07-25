@@ -1,6 +1,6 @@
 package com.codecool.dungeoncrawl.model;
 
-import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.data.actors.Player;
 
 public class PlayerModel extends BaseModel {
     private String playerName;

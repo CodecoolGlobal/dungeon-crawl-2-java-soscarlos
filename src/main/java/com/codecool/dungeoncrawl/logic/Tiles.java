@@ -1,6 +1,6 @@
-package com.codecool.dungeoncrawl;
+package com.codecool.dungeoncrawl.logic;
 
-import com.codecool.dungeoncrawl.logic.Drawable;
+import com.codecool.dungeoncrawl.data.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
@@ -28,6 +28,21 @@ public class Tiles {
         tileMap.put("floor", new Tile(2, 0));
         tileMap.put("player", new Tile(27, 0));
         tileMap.put("skeleton", new Tile(29, 6));
+        tileMap.put("demon", new Tile(24, 7));
+        tileMap.put("troll", new Tile(30, 6));
+        tileMap.put("key", new Tile (16, 23));
+        tileMap.put("sword", new Tile (0, 30));
+        tileMap.put("closed door", new Tile (5, 9));
+        tileMap.put("open door", new Tile (6, 9));
+        tileMap.put("tree", new Tile(1, 1));
+        tileMap.put("bookshelf", new Tile(13, 11));
+        tileMap.put("apple", new Tile (15, 29));
+        tileMap.put("stairs down", new Tile(3, 6));
+        tileMap.put("bazooka", new Tile(11, 31));
+        tileMap.put("water", new Tile(8, 5));
+        tileMap.put("torch", new Tile(4, 15));
+        tileMap.put("stairs", new Tile(2, 6));
+        tileMap.put("steak", new Tile(16, 28));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {
