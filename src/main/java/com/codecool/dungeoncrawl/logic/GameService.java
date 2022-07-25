@@ -3,7 +3,7 @@ package com.codecool.dungeoncrawl.logic;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class GameService {
         // TODO load an existing saved game state
     }
 
-    public void saveGame(String currentMap, Date savedAt, PlayerModel player) {
+    public void saveGame(String currentMap, LocalDateTime savedAt, PlayerModel player) {
         if (!gameStates.isEmpty()) {
             for (GameState state : gameStates) {
                 if (state.getPlayer().getPlayerName().equals(player.getPlayerName())) {
@@ -33,7 +33,7 @@ public class GameService {
         } else saveNewGameState(currentMap, savedAt, player);
     }
 
-    public void saveNewGameState(String currentMap, Date savedAt, PlayerModel player){
+    public void saveNewGameState(String currentMap, LocalDateTime savedAt, PlayerModel player){
         gameState = new GameState(currentMap, savedAt, player);
         gameStates.add(gameState);
     }

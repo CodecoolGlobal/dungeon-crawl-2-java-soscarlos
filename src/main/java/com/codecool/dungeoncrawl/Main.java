@@ -1,6 +1,5 @@
 package com.codecool.dungeoncrawl;
 
-
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.GameMap;
@@ -14,7 +13,7 @@ import com.codecool.dungeoncrawl.logic.Tiles;
 import com.codecool.dungeoncrawl.logic.actors.MonsterService;
 import com.codecool.dungeoncrawl.logic.actors.PlayerService;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
-import com.codecool.dungeoncrawl.model.GameState;
+import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -30,10 +29,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -49,7 +48,6 @@ public class Main extends Application {
     PlayService playService = new PlayService();
     ActorMovementValidator validate = new ActorMovementValidator();
     GameDatabaseManager dbManager;
-
     GameService game;
     GridPane ui = new GridPane();
     Label healthLabel = new Label();
@@ -114,7 +112,8 @@ public class Main extends Application {
             exit();
         } else if (saveCombinationMac.match(keyEvent)
                 || saveCombinationPc.match(keyEvent)) {
-            saveDialog();
+            LocalDateTime time = LocalDateTime.now();
+            saveDialog(currentMap, time, new PlayerModel(map.getPlayer()));
         }
     }
 
@@ -239,7 +238,7 @@ public class Main extends Application {
         } else hidePickUpButton();
     }
 
-    private void saveDialog(){
+    private void saveDialog(String currentMap, LocalDateTime saveAt, PlayerModel player) {
         TextInputDialog dialog = new TextInputDialog("saved stage");
         dialog.setHeaderText("Please enter a name to save your progress");
         dialog.setTitle("Save Dialog");
@@ -247,10 +246,10 @@ public class Main extends Application {
 
         Optional<String> result = dialog.showAndWait();
 
-        if (result.isPresent()){
+        if (result.isPresent()) {
             String input = result.get();
             System.out.println(input);
-            // game.saveNewGameState();
+//            TODO test this: game.saveNewGameState(currentMap, saveAt, player);
         }
     }
 }
