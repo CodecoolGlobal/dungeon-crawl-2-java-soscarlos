@@ -86,3 +86,7 @@ myoutputfolder/
 !/.mvn/wrapper/maven-wrapper.jar
 
 # End of https://www.gitignore.io/api/java,maven,intellij+iml
+
+src/main/java/com.codecool.dungeoncrawl/dao/GameDatabaseManager.java
+
+./src/main/java/com/codecool/dungeoncrawl/dao/GameDatabaseManager.java
