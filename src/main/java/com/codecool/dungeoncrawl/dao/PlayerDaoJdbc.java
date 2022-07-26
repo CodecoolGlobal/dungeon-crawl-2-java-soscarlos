@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.model.PlayerModel;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerDaoJdbc implements PlayerDao {
@@ -40,11 +41,57 @@ public class PlayerDaoJdbc implements PlayerDao {
 
     @Override
     public PlayerModel get(int id) {
-        return null;
+        try (Connection conn = dataSource.getConnection()) {
+
+            String sql = "SELECT * FROM player WHERE id = ?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet result = statement.executeQuery();
+
+            if (!result.next()) return null;
+
+            String name = result.getString(2);
+            int hp = result.getInt(3);
+            int x = result.getInt(4);
+            int y = result.getInt(5);
+
+            PlayerModel playerModel = new PlayerModel(name, hp, x, y);
+            playerModel.setId(id);
+
+            return playerModel;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<PlayerModel> getAll() {
-        return null;
+        try (Connection conn = dataSource.getConnection()) {
+
+            String sql = "SELECT * FROM player;";
+
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            ResultSet result = statement.executeQuery();
+
+            List<PlayerModel> playerModels = new ArrayList<>();
+
+            while (result.next()) {
+                int playerId = result.getInt(1);
+                String name = result.getString(2);
+                int hp = result.getInt(3);
+                int x = result.getInt(4);
+                int y = result.getInt(5);
+                PlayerModel playerModel = new PlayerModel(name, hp, x, y);
+                playerModel.setId(playerId);
+                playerModels.add(playerModel);
+            }
+
+            return playerModels;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
