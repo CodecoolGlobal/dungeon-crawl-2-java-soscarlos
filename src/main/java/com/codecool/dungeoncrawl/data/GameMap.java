@@ -66,7 +66,7 @@ public class GameMap {
         StringBuilder stringMap = new StringBuilder(String.format("%d %d\n", width, height));
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                Cell cell = cells[i][j];
+                Cell cell = cells[j][i];
                 if(cell.getActor() != null) {
                     switch (cell.getActor().getTileName()) {
                         case "player": stringMap.append("@");
