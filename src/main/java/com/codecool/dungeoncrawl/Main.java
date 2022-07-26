@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.data.Maps;
+import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.items.Item;
 import com.codecool.dungeoncrawl.logic.GameService;
@@ -81,6 +82,8 @@ public class Main extends Application {
             hidePickUpButton();
             loadLabels();
         });
+
+        startMenu(map.getPlayer(), dbManager);
 
         BorderPane borderPane = new BorderPane();
 
@@ -250,6 +253,20 @@ public class Main extends Application {
             String input = result.get();
             System.out.println(input);
 //            TODO test this: game.saveNewGameState(currentMap, saveAt, player);
+        }
+    }
+    private void startMenu(Player player, GameDatabaseManager gDbManager){
+        TextInputDialog dialog = new TextInputDialog("Enter name");
+        dialog.setHeaderText("Please enter a name for the hero");
+        dialog.setTitle("Main menu");
+        dialog.setContentText("Name: ");
+
+        Optional<String> result = dialog.showAndWait();
+
+        if (result.isPresent()) {
+            String inputName = result.get();
+            player.setName(inputName);
+            gDbManager.savePlayer(player);
         }
     }
 }
