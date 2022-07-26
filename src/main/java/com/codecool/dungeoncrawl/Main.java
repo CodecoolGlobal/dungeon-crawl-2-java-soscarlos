@@ -116,7 +116,7 @@ public class Main extends Application {
         } else if (saveCombinationMac.match(keyEvent)
                 || saveCombinationPc.match(keyEvent)) {
             LocalDateTime time = LocalDateTime.now();
-            saveDialog(currentMap, time, new PlayerModel(map.getPlayer()));
+            saveDialog(map.toString(), time, dbManager.getModel());
         }
     }
 
@@ -185,7 +185,6 @@ public class Main extends Application {
             ArrayList<Item> inventory = map.getPlayer().getInventory();
             loadNewMap(currentMap, inventory);
         }
-        System.out.println(map.toString());
     }
 
     private void loadNewMap(String newMap, ArrayList<Item> inventory) {
@@ -253,7 +252,7 @@ public class Main extends Application {
         if (result.isPresent()) {
             String input = result.get();
             System.out.println(input);
-//            TODO test this: game.saveNewGameState(currentMap, saveAt, player);
+            dbManager.saveGame(currentMap, saveAt, player);
         }
     }
     private void startMenu(Player player, GameDatabaseManager gDbManager){

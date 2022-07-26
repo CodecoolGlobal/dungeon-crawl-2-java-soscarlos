@@ -9,20 +9,53 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameDatabaseManager {
     private PlayerDao playerDao;
+
+    private PlayerModel model;
     private GameStateDao gameStateDao;
+    private List<GameState> gameStates;
+
+
 
     public void setup() throws SQLException {
         DataSource dataSource = connect();
         playerDao = new PlayerDaoJdbc(dataSource);
         gameStateDao = new GameStateDaoJdbc(dataSource, playerDao);
+        gameStates = new ArrayList<>();
+
     }
 
     public void savePlayer(Player player) {
-        PlayerModel model = new PlayerModel(player);
+        model = new PlayerModel(player);
         playerDao.add(model);
+    }
+
+    public PlayerModel getModel() {
+        return model;
+    }
+
+    public void saveGame(String currentMap, LocalDateTime savedAt, PlayerModel player) {
+        if (!gameStates.isEmpty()) {
+            for (GameState state : gameStates) {
+                if (state.getPlayer().getPlayerName().equals(player.getPlayerName())) {
+                    state.setSavedAt(savedAt);
+                    state.setCurrentMap(currentMap);
+//                TODO add additional maps: state.addDiscoveredMap(currentMap);
+
+                } else saveNewGameState(currentMap, savedAt, player);
+            }
+        } else saveNewGameState(currentMap, savedAt, player);
+    }
+
+    public void saveNewGameState(String currentMap, LocalDateTime savedAt, PlayerModel player){
+        GameState newState = new GameState(currentMap, savedAt, player);
+        gameStates.add(newState);
+        gameStateDao.add(newState, player);
     }
 
     private DataSource connect() throws SQLException {
