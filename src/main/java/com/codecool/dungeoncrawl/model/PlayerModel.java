@@ -1,12 +1,19 @@
 package com.codecool.dungeoncrawl.model;
 
 import com.codecool.dungeoncrawl.data.actors.Player;
+import com.codecool.dungeoncrawl.data.items.Item;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class PlayerModel extends BaseModel {
     private String playerName;
     private int hp;
+    private int strength;
     private int x;
     private int y;
+    private ArrayList<Item> inventory;
+
 
     public PlayerModel(String playerName, int x, int y) {
         this.playerName = playerName;
@@ -16,10 +23,11 @@ public class PlayerModel extends BaseModel {
 
     public PlayerModel(Player player) {
         this.playerName = player.getName();
+        this.hp = player.getHealth();
+        this.strength = player.getAttackStrength();
         this.x = player.getX();
         this.y = player.getY();
-
-        this.hp = player.getHealth();
+        this.inventory = player.getInventory();
 
     }
 
@@ -53,5 +61,26 @@ public class PlayerModel extends BaseModel {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
+    }
+
+    public ArrayList<Item> getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(ArrayList<Item> inventory) {
+        this.inventory = inventory;
+    }
+
+    public String convertInventoryToString() {
+        return getInventory().stream().map(Object::toString)
+                .collect(Collectors.joining(", "));
     }
 }
