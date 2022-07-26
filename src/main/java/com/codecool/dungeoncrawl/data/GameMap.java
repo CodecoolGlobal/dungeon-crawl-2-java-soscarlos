@@ -60,4 +60,65 @@ public class GameMap {
     public void removeMonster() {
         monsters.removeIf(monster -> monster.getHealth() <= 0);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringMap = new StringBuilder(String.format("%d %d\n", width, height));
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                Cell cell = cells[j][i];
+                if(cell.getActor() != null) {
+                    switch (cell.getActor().getTileName()) {
+                        case "player": stringMap.append("@");
+                            break;
+                        case "skeleton": stringMap.append("s");
+                            break;
+                        case "demon": stringMap.append("e");
+                            break;
+                        case "troll": stringMap.append("t");
+                            break;
+                    }
+                } else if (cell.getItem() != null) {
+                    switch(cell.getItem().getTileName()) {
+                        case "bazooka": stringMap.append("b");
+                            break;
+                        case "key": stringMap.append("k");
+                            break;
+                        case "sword": stringMap.append("w");
+                            break;
+                        case "apple": stringMap.append("A");
+                            break;
+                        case "steak": stringMap.append("F");
+                            break;
+                    }
+                } else {
+                    switch(cell.getTileName()) {
+                        case "empty": stringMap.append(" ");
+                            break;
+                        case "wall": stringMap.append("#");
+                            break;
+                        case "floor": stringMap.append(".");
+                            break;
+                        case "closed door": stringMap.append("d");
+                            break;
+                        case "tree": stringMap.append("T");
+                            break;
+                        case "bookshelf": stringMap.append("B");
+                            break;
+                        case "stairs down": stringMap.append("D");
+                            break;
+                        case "water": stringMap.append("W");
+                            break;
+                        case "torch": stringMap.append("x");
+                            break;
+                        case "stairs": stringMap.append("S");
+                            break;
+                    }
+                }
+            }
+            stringMap.append("\n");
+        }
+        stringMap.append("\n");
+        return stringMap.toString();
+    }
 }

@@ -182,6 +182,7 @@ public class Main extends Application {
             ArrayList<Item> inventory = map.getPlayer().getInventory();
             loadNewMap(currentMap, inventory);
         }
+        System.out.println(map.toString());
     }
 
     private void loadNewMap(String newMap, ArrayList<Item> inventory) {
