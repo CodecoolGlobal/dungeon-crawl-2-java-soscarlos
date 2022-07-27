@@ -38,7 +38,9 @@ public class ImportService {
                 InputStream inputStream = new FileInputStream(file);
                 JSONTokener tokener = new JSONTokener(inputStream);
                 JSONObject jsonObject = new JSONObject(tokener);
-                System.out.println(jsonObject);
+                System.out.println();
+                int id = (int) jsonObject.get("id");
+                System.out.println(id);
             } catch (FileNotFoundException e){
                 throw new RuntimeException(e);
             }
