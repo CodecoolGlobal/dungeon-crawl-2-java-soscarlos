@@ -1,11 +1,13 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
+import com.codecool.dungeoncrawl.dao.GameStateDaoJdbc;
 import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.data.Maps;
 import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
+import com.codecool.dungeoncrawl.data.cells.CellType;
 import com.codecool.dungeoncrawl.data.items.Item;
 import com.codecool.dungeoncrawl.logic.GameManager;
 import com.codecool.dungeoncrawl.logic.MapLoader;
@@ -14,14 +16,18 @@ import com.codecool.dungeoncrawl.logic.Tiles;
 import com.codecool.dungeoncrawl.logic.actors.MonsterService;
 import com.codecool.dungeoncrawl.logic.actors.PlayerService;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
+import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -29,12 +35,14 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Main extends Application {
@@ -109,6 +117,9 @@ public class Main extends Application {
         KeyCombination saveCombinationMac = new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN);
         KeyCombination saveCombinationPc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
 
+        KeyCombination loadCombinationMac = new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN);
+        KeyCombination loadCombinationPc = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
+
         if (exitCombinationMac.match(keyEvent)
                 || exitCombinationPc.match(keyEvent)
                 || keyEvent.getCode() == KeyCode.ESCAPE) {
@@ -117,6 +128,9 @@ public class Main extends Application {
                 || saveCombinationPc.match(keyEvent)) {
             LocalDateTime time = LocalDateTime.now();
             saveDialog(map.toString(), time, dbManager.getModel());
+        } else if (loadCombinationMac.match(keyEvent)
+                || loadCombinationPc.match(keyEvent)) {
+            loadView();
         }
     }
 
@@ -254,6 +268,40 @@ public class Main extends Application {
 
             dbManager.saveGame(currentMap, saveAt, player, input);
         }
+    }
+
+    private void loadView() {
+        Stage stage = new Stage();
+        stage.setTitle("Game state selection");
+
+        ListView<GameState> list = new ListView<>();
+        ObservableList<GameState> gameStates = FXCollections.observableList(dbManager.getGameStates());
+        list.setItems(gameStates);
+
+        StackPane root = new StackPane();
+        root.getChildren().add(list);
+        stage.setScene(new Scene(root, 600, 350));
+        stage.show();
+
+        GameState gameState = list.getSelectionModel().getSelectedItem();
+        String map = gameState.getCurrentMap();
+        int playerId = gameState.getPlayer().getId();
+
+        loadGame(map, playerId);
+    }
+
+    private void loadGame(String loadedMap, int playerId) {
+        PlayerModel playerModel = dbManager.getPlayerModel(playerId);
+
+        map = MapLoader.loadMap(loadedMap);
+        Player player = map.getPlayer();
+
+        player.setHealth(playerModel.getHp());
+        player.setAttackStrength(playerModel.getStrength());
+        //TODO: Set inventory of player
+
+        refresh();
+        loadLabels();
     }
     private void startMenu(Player player, GameDatabaseManager gDbManager){
         TextInputDialog dialog = new TextInputDialog("Enter name");

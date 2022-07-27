@@ -108,6 +108,7 @@ public class GameStateDaoJdbc implements GameStateDao {
             throw new RuntimeException(e);
         }
     }
+
     private LocalDateTime convertTimestampToLocalDateTime(Object data) {
         if (data == null) {
             return null;
