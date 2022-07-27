@@ -121,11 +121,12 @@ public class GameDatabaseManager {
         return dataSource;
     }
 
-    public JSONArray convertTableToJSON(String dbName) throws SQLException {
+    public JSONArray convertTableToJSON(int id) throws SQLException {
         DataSource dataSource = connect();
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT * FROM " + dbName;
+            String sql = "SELECT * FROM player JOIN game_state gs on player.id = gs.player_id WHERE player.id = ?;";
             PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
