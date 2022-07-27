@@ -281,7 +281,7 @@ public class Main extends Application {
         StackPane root = new StackPane();
         root.getChildren().add(list);
         stage.setScene(new Scene(root, 600, 350));
-        stage.show();
+        stage.showAndWait();
 
         GameState gameState = list.getSelectionModel().getSelectedItem();
         String map = gameState.getCurrentMap();

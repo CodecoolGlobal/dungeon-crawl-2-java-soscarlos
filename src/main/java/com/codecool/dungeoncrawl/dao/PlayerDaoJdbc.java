@@ -51,11 +51,13 @@ public class PlayerDaoJdbc implements PlayerDao {
             if (!result.next()) return null;
 
             String name = result.getString(2);
-            int hp = result.getInt(3);
-            int x = result.getInt(4);
-            int y = result.getInt(5);
+            int hp = result.getInt(3); // TODO: create method getPlayerStats
+            int strength = result.getInt(4);
+            String inventory = result.getString(5);
+            int x = result.getInt(6);
+            int y = result.getInt(7);
 
-            PlayerModel playerModel = new PlayerModel(name, hp, x, y);
+            PlayerModel playerModel = new PlayerModel(name, hp, strength, inventory, x, y);
             playerModel.setId(id);
 
             return playerModel;
@@ -81,9 +83,11 @@ public class PlayerDaoJdbc implements PlayerDao {
                 int playerId = result.getInt(1);
                 String name = result.getString(2);
                 int hp = result.getInt(3);
-                int x = result.getInt(4);
-                int y = result.getInt(5);
-                PlayerModel playerModel = new PlayerModel(name, hp, x, y);
+                int strength = result.getInt(4);
+                String inventory = result.getString(5);
+                int x = result.getInt(6);
+                int y = result.getInt(7);
+                PlayerModel playerModel = new PlayerModel(name, hp, strength, inventory, x, y);
                 playerModel.setId(playerId);
                 playerModels.add(playerModel);
             }

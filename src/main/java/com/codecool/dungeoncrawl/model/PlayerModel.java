@@ -15,7 +15,7 @@ public class PlayerModel extends BaseModel {
     private ArrayList<Item> inventory;
 
 
-    public PlayerModel(String playerName, int hp, int x, int y) {
+    public PlayerModel(String playerName, int hp, int strength, String inventory, int x, int y) {
         this.playerName = playerName;
         this.x = x;
         this.y = y;
