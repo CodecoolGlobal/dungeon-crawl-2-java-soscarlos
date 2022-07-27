@@ -42,6 +42,7 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Main extends Application {
@@ -117,7 +118,7 @@ public class Main extends Application {
         KeyCombination saveCombinationPc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
 
         KeyCombination loadCombinationMac = new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN);
-        KeyCombination loadCombinationPc = new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN);
+        KeyCombination loadCombinationPc = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
 
         if (exitCombinationMac.match(keyEvent)
                 || exitCombinationPc.match(keyEvent)
@@ -291,12 +292,9 @@ public class Main extends Application {
 
     private void loadGame(String loadedMap, int playerId) {
         PlayerModel playerModel = dbManager.getPlayerModel(playerId);
-        int x = playerModel.getX();
-        int y = playerModel.getY();
 
         map = MapLoader.loadMap(loadedMap);
-        Cell cell = new Cell(map, x, y, CellType.FLOOR);
-        Player player = new Player(cell);
+        Player player = map.getPlayer();
 
         player.setHealth(playerModel.getHp());
         player.setAttackStrength(playerModel.getStrength());
