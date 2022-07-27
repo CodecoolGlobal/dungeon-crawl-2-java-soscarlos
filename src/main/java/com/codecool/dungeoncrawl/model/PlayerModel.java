@@ -22,9 +22,11 @@ public class PlayerModel extends BaseModel {
 
     public PlayerModel(String playerName, int hp, int strength, String inventory, int x, int y) {
         this.playerName = playerName;
+        this.hp = hp;
+        this.strength = strength;
+        this.inventory = convertStringToInventory(inventory);
         this.x = x;
         this.y = y;
-        this.hp = hp;
     }
 
     public PlayerModel(Player player) {
