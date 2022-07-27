@@ -19,6 +19,7 @@ import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
+import javafx.beans.value.ObservableListValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -42,9 +43,8 @@ import javafx.stage.Stage;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main extends Application {
     String currentMap = Maps.mapOne;
@@ -275,14 +275,17 @@ public class Main extends Application {
         Stage stage = new Stage();
         stage.setTitle("Game state selection");
 
-        ListView<GameState> list = new ListView<>();
-        ObservableList<GameState> gameStates = FXCollections.observableList(dbManager.getGameStates());
+        HashMap<Integer, String> gameStatesInfo = new HashMap<>(dbManager.getGameStates());
+        ListView<String> list = new ListView<>();
+        ObservableList<String> gameStates = FXCollections.observableList(new ArrayList<>(gameStatesInfo.values()));
         list.setItems(gameStates);
 
         Button button = new Button("Select");
 
         button.setOnAction(actionEvent -> {
-            GameState gameState = list.getSelectionModel().getSelectedItem();
+            String gameStateString = list.getSelectionModel().getSelectedItem();
+            GameState gameState = getGameState(gameStateString, gameStatesInfo);
+
             String map = gameState.getCurrentMap();
             int playerId = gameState.getPlayer().getId();
 
@@ -297,8 +300,23 @@ public class Main extends Application {
         stage.show();
     }
 
+    private GameState getGameState(String gameStateString, HashMap<Integer, String> gameStatesInfo) {
+        try {
+            int gameStateId = 0;
+
+            for (Map.Entry<Integer, String> entry : gameStatesInfo.entrySet()) {
+                if(Objects.equals(entry.getValue(), gameStateString)) {
+                    gameStateId = entry.getKey();
+                }
+            }
+            return dbManager.getGameState(gameStateId);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void loadGame(String loadedMap, int playerId) {
-        System.out.println(loadedMap);
         PlayerModel playerModel = dbManager.getPlayerModel(playerId);
 
         map = MapLoader.loadMap(loadedMap);

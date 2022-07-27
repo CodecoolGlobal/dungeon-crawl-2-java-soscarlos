@@ -121,10 +121,13 @@ public class GameStateDaoJdbc implements GameStateDao {
             while(resultSet.next()) {
                 int id = resultSet.getInt(1);
                 Object timeObject = resultSet.getObject(2);
+
                 LocalDateTime timeAt = convertTimestampToLocalDateTime(timeObject);
-                String time = timeAt.toString();
+                String dateTime = timeAt.toString();
+                String savedAt = assembleTimeStamp(dateTime);
+
                 String playerName = resultSet.getString(3);
-                String gameState = String.join(", ", playerName, time);
+                String gameState = String.join(", ", playerName, savedAt);
 
                 gameStatesInfo.put(id, gameState);
 
@@ -135,6 +138,13 @@ public class GameStateDaoJdbc implements GameStateDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String assembleTimeStamp(String dateTime) {
+        String date = dateTime.substring(0, dateTime.indexOf("T"));
+        String time = dateTime.substring(dateTime.indexOf("T") + 1, dateTime.indexOf("."));
+
+        return String.join(" ", date, time);
     }
 
     private LocalDateTime convertTimestampToLocalDateTime(Object data) {

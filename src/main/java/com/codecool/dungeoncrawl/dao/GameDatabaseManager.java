@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,8 +43,8 @@ public class GameDatabaseManager {
         playerDao.add(model);
     }
 
-    public List<GameState> getGameStates() {
-        return gameStateDao.getAll();
+    public HashMap<Integer, String> getGameStates() {
+        return gameStateDao.getGameStatesInfo();
     }
 
     public PlayerModel getPlayerModel(int playerId) {
@@ -53,6 +54,8 @@ public class GameDatabaseManager {
     public PlayerModel getModel() {
         return model;
     }
+
+    public GameState getGameState(int id) {return gameStateDao.get(id);}
 
     public void saveGame(String currentMap, LocalDateTime savedAt, PlayerModel player, String inputName) {
 
