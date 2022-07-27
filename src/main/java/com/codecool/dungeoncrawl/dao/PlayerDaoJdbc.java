@@ -1,13 +1,15 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.data.actors.Player;
-import com.codecool.dungeoncrawl.data.items.Item;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import org.json.*;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class PlayerDaoJdbc implements PlayerDao {
     private DataSource dataSource;
@@ -109,6 +111,44 @@ public class PlayerDaoJdbc implements PlayerDao {
             }
 
             return playerModels;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public JSONArray convertPlayerTableToJSON() {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT * FROM player;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            List<String> colNames = IntStream.range(0, columnCount)
+                    .mapToObj(i -> {
+                        try {
+                            return metaData.getColumnName(i + 1);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            return "?";
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+            JSONArray result = new JSONArray();
+            while (resultSet.next()) {
+                JSONObject row = new JSONObject();
+                colNames.forEach(colName -> {
+                    try {
+                        row.put(colName, resultSet.getObject(colName));
+                    } catch (JSONException | SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
+                result.put(row);
+            }
+            return result;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
