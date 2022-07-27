@@ -121,42 +121,4 @@ public class GameStateDaoJdbc implements GameStateDao {
         final Timestamp timestamp = (Timestamp) data;
         return timestamp.toLocalDateTime();
     }
-
-    @Override
-    public JSONArray convertGameStateTableToJSON() {
-        try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT * FROM game_state;";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            List<String> colNames = IntStream.range(0, columnCount)
-                    .mapToObj(i -> {
-                        try {
-                            return metaData.getColumnName(i + 1);
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                            return "?";
-                        }
-                    })
-                    .collect(Collectors.toList());
-
-            JSONArray result = new JSONArray();
-            while (resultSet.next()) {
-                JSONObject row = new JSONObject();
-                colNames.forEach(colName -> {
-                    try {
-                        row.put(colName, resultSet.getObject(colName));
-                    } catch (JSONException | SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
-                result.put(row);
-            }
-            return result;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

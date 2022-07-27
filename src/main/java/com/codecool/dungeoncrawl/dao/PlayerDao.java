@@ -11,5 +11,4 @@ public interface PlayerDao {
     void update(Player player, int id, String inventory);
     PlayerModel get(int id);
     List<PlayerModel> getAll();
-    JSONArray convertPlayerTableToJSON();
 }

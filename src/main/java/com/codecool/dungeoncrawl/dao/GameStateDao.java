@@ -11,5 +11,4 @@ public interface GameStateDao {
     void update(GameState state);
     GameState get(int id);
     List<GameState> getAll();
-    JSONArray convertGameStateTableToJSON();
 }
