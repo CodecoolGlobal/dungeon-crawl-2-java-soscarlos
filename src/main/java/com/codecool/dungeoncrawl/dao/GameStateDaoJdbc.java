@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GameStateDaoJdbc implements GameStateDao {
@@ -103,6 +104,33 @@ public class GameStateDaoJdbc implements GameStateDao {
             }
 
             return states;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public HashMap<Integer, String> getGameStatesInfo()  {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT gs.id, gs.saved_at, p.player_name FROM game_state gs JOIN player p ON gs.player_id = p.id";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            HashMap<Integer, String> gameStatesInfo = new HashMap<>();
+
+            while(resultSet.next()) {
+                int id = resultSet.getInt(1);
+                Object timeObject = resultSet.getObject(2);
+                LocalDateTime timeAt = convertTimestampToLocalDateTime(timeObject);
+                String time = timeAt.toString();
+                String playerName = resultSet.getString(3);
+                String gameState = String.join(", ", playerName, time);
+
+                gameStatesInfo.put(id, gameState);
+
+            }
+
+            return gameStatesInfo;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
