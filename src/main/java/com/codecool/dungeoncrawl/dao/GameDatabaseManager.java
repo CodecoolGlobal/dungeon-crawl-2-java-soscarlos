@@ -35,6 +35,14 @@ public class GameDatabaseManager {
         playerDao.add(model);
     }
 
+    public List<GameState> getGameStates() {
+        return gameStateDao.getAll();
+    }
+
+    public PlayerModel getPlayerModel(int playerId) {
+        return playerDao.get(playerId);
+    }
+
     public PlayerModel getModel() {
         return model;
     }

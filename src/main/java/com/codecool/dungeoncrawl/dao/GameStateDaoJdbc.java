@@ -86,7 +86,7 @@ public class GameStateDaoJdbc implements GameStateDao {
 
                 int playerId = resultSet.getInt(4);
                 Object timeObject = resultSet.getObject(3);
-                LocalDateTime timeAt = (LocalDateTime)timeObject;
+                LocalDateTime timeAt = convertTimestampToLocalDateTime(timeObject);
                 PlayerModel playerModel = playerDao.get(playerId);
 
                 GameState state = new GameState(map, timeAt, playerModel);
@@ -99,5 +99,13 @@ public class GameStateDaoJdbc implements GameStateDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private LocalDateTime convertTimestampToLocalDateTime(Object data) {
+        if (data == null) {
+            return null;
+        }
+        final Timestamp timestamp = (Timestamp) data;
+        return timestamp.toLocalDateTime();
     }
 }
