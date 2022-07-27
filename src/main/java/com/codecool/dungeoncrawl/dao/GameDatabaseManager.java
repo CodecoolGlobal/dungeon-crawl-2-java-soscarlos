@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.data.actors.Player;
+import com.codecool.dungeoncrawl.data.items.Item;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.scene.control.Alert;
@@ -54,29 +55,32 @@ public class GameDatabaseManager {
         return model;
     }
 
-    public void saveGame(String currentMap, LocalDateTime savedAt, PlayerModel player, String inputName) {
+    public void saveGame(String currentMap, LocalDateTime savedAt, PlayerModel playerModel, String inputName, Player player) {
 
         List<GameState> stateList = gameStateDao.getAll();
 
         if (!stateList.isEmpty()) {
             for (GameState state : stateList) {
-                if (state.getPlayer().getPlayerName().equals(inputName) && player.getPlayerName().equals(inputName)) {
-                    overWriteDialog(state, currentMap, savedAt);
+                if (state.getPlayer().getPlayerName().equals(inputName) && playerModel.getPlayerName().equals(inputName)) {
+                    overWriteDialog(state, currentMap, savedAt, player);
 
                     //                TODO add additional maps: state.addDiscoveredMap(currentMap);
 
-                } else saveNewGameState(currentMap, savedAt, player);
+                } else saveNewGameState(currentMap, savedAt, playerModel, player);
             }
-        } else saveNewGameState(currentMap, savedAt, player);
+        } else saveNewGameState(currentMap, savedAt, playerModel, player);
     }
 
-    public void saveNewGameState(String currentMap, LocalDateTime savedAt, PlayerModel player) {
-        GameState newState = new GameState(currentMap, savedAt, player);
+    public void saveNewGameState(String currentMap, LocalDateTime savedAt, PlayerModel playerModel, Player player) {
+        GameState newState = new GameState(currentMap, savedAt, playerModel);
+        ArrayList<Item> inventoryList = player.getInventory();
+        String inventory = playerModel.convertInventoryToString(inventoryList);
+        playerDao.update(player, playerModel.getId(), inventory);
         gameStates.add(newState);
-        gameStateDao.add(newState, player);
+        gameStateDao.add(newState, playerModel);
     }
 
-    private void overWriteDialog(GameState state, String currentMap, LocalDateTime saveAt) {
+    private void overWriteDialog(GameState state, String currentMap, LocalDateTime saveAt, Player player) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
         alert.setHeaderText("Overwrite saved game");
@@ -87,6 +91,11 @@ public class GameDatabaseManager {
             state.setSavedAt(saveAt);
             state.setCurrentMap(currentMap);
             gameStateDao.update(state);
+            PlayerModel model = state.getPlayer();
+            int playerId = model.getId();
+            ArrayList<Item> inventoryList = player.getInventory();
+            String inventory = model.convertInventoryToString(inventoryList);
+            playerDao.update(player, playerId, inventory);
         }
     }
 

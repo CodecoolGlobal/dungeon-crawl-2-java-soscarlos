@@ -87,8 +87,8 @@ public class PlayerModel extends BaseModel {
         this.inventory = inventory;
     }
 
-    public String convertInventoryToString() {
-        return inventory.stream().map(Item::getTileName)
+    public String convertInventoryToString(ArrayList<Item> dbInventory) {
+        return dbInventory.stream().map(Item::getTileName)
                 .collect(Collectors.joining(", "));
     }
     public ArrayList<Item> convertStringToInventory(String dbInventory) {
