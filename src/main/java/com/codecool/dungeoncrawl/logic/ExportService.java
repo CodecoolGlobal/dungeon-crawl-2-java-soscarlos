@@ -11,18 +11,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ExportService {
-    public void exportJSON(JSONArray data){
+    public void exportJSON(JSONArray data) {
         Stage exportStage = new Stage();
 
         JSONObject object = data.getJSONObject(0);
-        String payLoad = object.toMap().toString();
+        String payLoad = object.toString();
 
         Label info = new Label("Do you want to export your game progress?");
         Button btnSave = new Button("Export");
@@ -46,6 +45,7 @@ public class ExportService {
         exportStage.setTitle("export");
         exportStage.show();
     }
+
     private void saveTextToFile(String content, File file) {
         try {
             PrintWriter writer;
