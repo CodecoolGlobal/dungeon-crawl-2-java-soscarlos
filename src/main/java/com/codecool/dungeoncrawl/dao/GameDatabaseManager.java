@@ -1,10 +1,10 @@
 package com.codecool.dungeoncrawl.dao;
 
-import com.codecool.dungeoncrawl.dao.PlayerDao;
-import com.codecool.dungeoncrawl.dao.PlayerDaoJdbc;
 import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GameDatabaseManager {
     private PlayerDao playerDao;
@@ -19,7 +20,6 @@ public class GameDatabaseManager {
     private PlayerModel model;
     private GameStateDao gameStateDao;
     private List<GameState> gameStates;
-
 
 
     public void setup() throws SQLException {
@@ -31,6 +31,13 @@ public class GameDatabaseManager {
     }
 
     public void savePlayer(Player player) {
+        List<PlayerModel> playerModelList = playerDao.getAll();
+        for (PlayerModel playerModel: playerModelList){
+            if (playerModel.getPlayerName().equals(player.getName())){
+                model = playerModel;
+                return;
+            }
+        }
         model = new PlayerModel(player);
         playerDao.add(model);
     }
@@ -47,24 +54,42 @@ public class GameDatabaseManager {
         return model;
     }
 
-    public void saveGame(String currentMap, LocalDateTime savedAt, PlayerModel player) {
-        if (!gameStates.isEmpty()) {
-            for (GameState state : gameStates) {
-                if (state.getPlayer().getPlayerName().equals(player.getPlayerName())) {
-                    state.setSavedAt(savedAt);
-                    state.setCurrentMap(currentMap);
-//                TODO add additional maps: state.addDiscoveredMap(currentMap);
+    public void saveGame(String currentMap, LocalDateTime savedAt, PlayerModel player, String inputName) {
+
+        List<GameState> stateList = gameStateDao.getAll();
+
+        if (!stateList.isEmpty()) {
+            for (GameState state : stateList) {
+                if (state.getPlayer().getPlayerName().equals(inputName) && player.getPlayerName().equals(inputName)) {
+                    overWriteDialog(state, currentMap, savedAt);
+
+                    //                TODO add additional maps: state.addDiscoveredMap(currentMap);
 
                 } else saveNewGameState(currentMap, savedAt, player);
             }
         } else saveNewGameState(currentMap, savedAt, player);
     }
 
-    public void saveNewGameState(String currentMap, LocalDateTime savedAt, PlayerModel player){
+    public void saveNewGameState(String currentMap, LocalDateTime savedAt, PlayerModel player) {
         GameState newState = new GameState(currentMap, savedAt, player);
         gameStates.add(newState);
         gameStateDao.add(newState, player);
     }
+
+    private void overWriteDialog(GameState state, String currentMap, LocalDateTime saveAt) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Overwrite saved game");
+        alert.setContentText("Would you like to overwrite the already existing state?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            state.setSavedAt(saveAt);
+            state.setCurrentMap(currentMap);
+            gameStateDao.update(state);
+        }
+    }
+
 
     private DataSource connect() throws SQLException {
 

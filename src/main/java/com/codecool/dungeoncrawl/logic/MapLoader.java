@@ -12,8 +12,6 @@ import java.util.Scanner;
 
 public class MapLoader {
 
-    String stringMap;
-
     public static GameMap loadMap(String currentMap) {
         InputStream is = MapLoader.class.getResourceAsStream(currentMap);
 

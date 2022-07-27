@@ -5,17 +5,13 @@ import com.codecool.dungeoncrawl.model.PlayerModel;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameStateDaoJdbc implements GameStateDao {
     private DataSource dataSource;
     private PlayerDao playerDao;
-
-    private Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
     public GameStateDaoJdbc(DataSource dataSource, PlayerDao playerDao) {
         this.dataSource = dataSource;
@@ -40,6 +36,18 @@ public class GameStateDaoJdbc implements GameStateDao {
 
     @Override
     public void update(GameState state) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "UPDATE game_state SET current_map = ?, saved_at = ? WHERE id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, state.getCurrentMap());
+            statement.setObject(2, state.getSavedAt());
+            statement.setInt(3, state.getId());
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -56,7 +64,7 @@ public class GameStateDaoJdbc implements GameStateDao {
 
             String map = result.getString(2);
             Object timeObject = result.getObject(3);
-            LocalDateTime time = (LocalDateTime) timeObject;
+            LocalDateTime time = convertTimestampToLocalDateTime(timeObject);
             int playerId = result.getInt(4);
 
             PlayerModel playerModel = playerDao.get(playerId);

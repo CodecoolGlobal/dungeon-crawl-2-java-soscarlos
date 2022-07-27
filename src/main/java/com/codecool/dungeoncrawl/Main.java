@@ -9,7 +9,7 @@ import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.cells.CellType;
 import com.codecool.dungeoncrawl.data.items.Item;
-import com.codecool.dungeoncrawl.logic.GameService;
+import com.codecool.dungeoncrawl.logic.GameManager;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.PlayService;
 import com.codecool.dungeoncrawl.logic.Tiles;
@@ -57,7 +57,7 @@ public class Main extends Application {
     PlayService playService = new PlayService();
     ActorMovementValidator validate = new ActorMovementValidator();
     GameDatabaseManager dbManager;
-    GameService game;
+    GameManager game;
     GridPane ui = new GridPane();
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
@@ -265,8 +265,8 @@ public class Main extends Application {
 
         if (result.isPresent()) {
             String input = result.get();
-            System.out.println(input);
-            dbManager.saveGame(currentMap, saveAt, player);
+
+            dbManager.saveGame(currentMap, saveAt, player, input);
         }
     }
 
