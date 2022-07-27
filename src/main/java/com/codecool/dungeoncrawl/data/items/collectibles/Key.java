@@ -8,6 +8,10 @@ public class Key extends Collectible {
         super(cell);
     }
 
+    public Key() {
+
+    }
+
     @Override
     public String getType() {
         return "mission";

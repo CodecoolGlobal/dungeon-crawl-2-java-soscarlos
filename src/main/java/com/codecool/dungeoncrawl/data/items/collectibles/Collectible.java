@@ -12,6 +12,10 @@ public abstract class Collectible extends Item {
         super(cell);
     }
 
+    public Collectible() {
+
+    }
+
     @Override
     public void pickUp(Player player) {
         Item item = player.getCell().getItem();
