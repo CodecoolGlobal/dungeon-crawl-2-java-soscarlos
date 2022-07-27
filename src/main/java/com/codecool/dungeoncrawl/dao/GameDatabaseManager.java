@@ -121,9 +121,8 @@ public class GameDatabaseManager {
         return dataSource;
     }
 
-    public JSONArray convertTableToJSON(int id) throws SQLException {
-        DataSource dataSource = connect();
-        try (Connection conn = dataSource.getConnection()) {
+    public JSONArray convertTableToJSON(int id) {
+        try (Connection conn = connect().getConnection()) {
             String sql = "SELECT * FROM player JOIN game_state gs on player.id = gs.player_id WHERE player.id = ?;";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, id);

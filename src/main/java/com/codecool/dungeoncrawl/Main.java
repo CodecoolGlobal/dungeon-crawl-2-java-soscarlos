@@ -7,10 +7,7 @@ import com.codecool.dungeoncrawl.data.Maps;
 import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.items.Item;
-import com.codecool.dungeoncrawl.logic.GameManager;
-import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.PlayService;
-import com.codecool.dungeoncrawl.logic.Tiles;
+import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.actors.MonsterService;
 import com.codecool.dungeoncrawl.logic.actors.PlayerService;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
@@ -40,6 +37,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.json.JSONArray;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -57,6 +55,7 @@ public class Main extends Application {
     MonsterService monsterService = new MonsterService();
     PlayerService playerService = new PlayerService();
     PlayService playService = new PlayService();
+    ExportService export = new ExportService();
     ActorMovementValidator validate = new ActorMovementValidator();
     GameDatabaseManager dbManager;
     GameManager game;
@@ -122,6 +121,9 @@ public class Main extends Application {
         KeyCombination loadCombinationMac = new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN);
         KeyCombination loadCombinationPc = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
 
+        KeyCombination exportCombinationMac = new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN);
+        KeyCombination exportCombinationPc = new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN);
+
         if (exitCombinationMac.match(keyEvent)
                 || exitCombinationPc.match(keyEvent)
                 || keyEvent.getCode() == KeyCode.ESCAPE) {
@@ -133,6 +135,9 @@ public class Main extends Application {
         } else if (loadCombinationMac.match(keyEvent)
                 || loadCombinationPc.match(keyEvent)) {
             loadView();
+        } else if (exportCombinationMac.match(keyEvent)
+                || exportCombinationPc.match(keyEvent)) {
+            exportDialog(dbManager.getModel());
         }
     }
 
@@ -293,6 +298,7 @@ public class Main extends Application {
     }
 
     private void loadGame(String loadedMap, int playerId) {
+
         PlayerModel playerModel = dbManager.getPlayerModel(playerId);
 
         map = MapLoader.loadMap(loadedMap);
@@ -304,6 +310,12 @@ public class Main extends Application {
 
         refresh();
         loadLabels();
+    }
+    private void exportDialog(PlayerModel playerModel) {
+        int playerId = playerModel.getId();
+        JSONArray jsonArray = dbManager.convertTableToJSON(playerId);
+
+        export.exportJSON(jsonArray);
     }
 
     private void startNewGame(Player player, GameDatabaseManager gDbManager, Stage startMenu){
