@@ -186,6 +186,9 @@ public class Main extends Application {
             loadNewMap(currentMap, inventory);
         }
         System.out.println(map.toString());
+        // TODO check database
+        PlayerModel playerModel = new PlayerModel(map.getPlayer());
+        System.out.println(playerModel.convertStringToInventory("sword, key, bazooka"));
     }
 
     private void loadNewMap(String newMap, ArrayList<Item> inventory) {

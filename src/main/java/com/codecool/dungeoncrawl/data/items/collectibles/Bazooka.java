@@ -10,6 +10,10 @@ public class Bazooka extends Collectible{
         this.attackStrength = 50;
     }
 
+    public Bazooka() {
+        this.attackStrength = 50;
+    }
+
     @Override
     public int getAttackBoost() {
         return attackStrength;

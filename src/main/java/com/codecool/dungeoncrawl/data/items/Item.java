@@ -12,6 +12,9 @@ public abstract class Item implements Drawable {
         cell.setItem(this);
     }
 
+    public Item() {
+    }
+
     public void pickUp(Player player) {
     }
 

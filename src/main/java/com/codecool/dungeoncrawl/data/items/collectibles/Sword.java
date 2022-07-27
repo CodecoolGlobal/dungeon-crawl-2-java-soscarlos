@@ -11,6 +11,10 @@ public class Sword extends Collectible {
         this.attackStrength = 5;
     }
 
+    public Sword() {
+        this.attackStrength = 5;
+    }
+
     @Override
     public int getAttackBoost() {
         return attackStrength;
