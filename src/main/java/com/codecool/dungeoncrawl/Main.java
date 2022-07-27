@@ -266,7 +266,7 @@ public class Main extends Application {
         if (result.isPresent()) {
             String input = result.get();
 
-            dbManager.saveGame(currentMap, saveAt, player, input);
+            dbManager.saveGame(currentMap, saveAt, player, input, map.getPlayer());
         }
     }
 
