@@ -1,13 +1,11 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
-import com.codecool.dungeoncrawl.dao.GameStateDaoJdbc;
 import com.codecool.dungeoncrawl.data.Drawable;
 import com.codecool.dungeoncrawl.data.GameMap;
 import com.codecool.dungeoncrawl.data.Maps;
 import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
-import com.codecool.dungeoncrawl.data.cells.CellType;
 import com.codecool.dungeoncrawl.data.items.Item;
 import com.codecool.dungeoncrawl.logic.GameManager;
 import com.codecool.dungeoncrawl.logic.MapLoader;
@@ -19,16 +17,17 @@ import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -36,8 +35,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -106,7 +108,7 @@ public class Main extends Application {
 
         scene.setOnKeyPressed(this::onKeyPressed);
 
-        primaryStage.setTitle("Dungeon Crawl");
+        primaryStage.setTitle("CRR - Dungeon Crawler");
         primaryStage.show();
     }
 
@@ -303,18 +305,53 @@ public class Main extends Application {
         refresh();
         loadLabels();
     }
-    private void startMenu(Player player, GameDatabaseManager gDbManager){
+
+    private void startNewGame(Player player, GameDatabaseManager gDbManager, Stage startMenu){
         TextInputDialog dialog = new TextInputDialog("Enter name");
         dialog.setHeaderText("Please enter a name for the hero");
-        dialog.setTitle("Main menu");
+        dialog.setTitle("Start new game");
         dialog.setContentText("Name: ");
-
         Optional<String> result = dialog.showAndWait();
 
         if (result.isPresent()) {
             String inputName = result.get();
             player.setName(inputName);
             gDbManager.savePlayer(player);
+            startMenu.close();
         }
+    }
+    private void startMenu(Player player, GameDatabaseManager gDbManager){
+        Stage startStage = new Stage();
+        startStage.setTitle("CRR - Dungeon Crawler");
+
+        Label introMessage = new Label("Dungeon Crawler");
+        Label credits = new Label("code by Reka, Roman & Carlos");
+        introMessage.setFont(new Font(20));
+
+        Button newGameButton = new Button("New Game");
+        Button loadGameButton = new Button("Load Game");
+
+        startStage.setOnCloseRequest(windowEvent -> {
+            Platform.exit();
+        });
+        newGameButton.setOnAction(actionEvent -> {
+            startNewGame(player, gDbManager, startStage);
+        });
+
+        loadGameButton.setOnAction(actionEvent -> {
+            loadView();
+        });
+        VBox box = new VBox();
+
+        box.getChildren().addAll(introMessage, newGameButton, loadGameButton, credits);
+        box.setAlignment(Pos.CENTER);
+        box.setSpacing(20);
+
+        Scene menuScene = new Scene(box, 300, 200);
+
+        startStage.setScene(menuScene);
+        startStage.initStyle(StageStyle.DECORATED);
+        startStage.showAndWait();
+
     }
 }
