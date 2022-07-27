@@ -22,7 +22,6 @@ public class PlayerDaoJdbc implements PlayerDao {
             statement.setInt(2, player.getHp());
             statement.setInt(3, player.getStrength());
             statement.setString(4, player.convertInventoryToString());
-            System.out.println(player.convertInventoryToString());
             statement.setInt(5, player.getX());
             statement.setInt(6, player.getY());
             statement.executeUpdate();
