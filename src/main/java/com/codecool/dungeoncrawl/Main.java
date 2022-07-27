@@ -36,6 +36,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -278,19 +279,26 @@ public class Main extends Application {
         ObservableList<GameState> gameStates = FXCollections.observableList(dbManager.getGameStates());
         list.setItems(gameStates);
 
-        StackPane root = new StackPane();
-        root.getChildren().add(list);
-        stage.setScene(new Scene(root, 600, 350));
-        stage.showAndWait();
+        Button button = new Button("Select");
 
-        GameState gameState = list.getSelectionModel().getSelectedItem();
-        String map = gameState.getCurrentMap();
-        int playerId = gameState.getPlayer().getId();
+        button.setOnAction(actionEvent -> {
+            GameState gameState = list.getSelectionModel().getSelectedItem();
+            String map = gameState.getCurrentMap();
+            int playerId = gameState.getPlayer().getId();
 
-        loadGame(map, playerId);
+            stage.close();
+            loadGame(map, playerId);
+        });
+
+        VBox vBox = new VBox(list, button);
+
+        Scene scene = new Scene(vBox, 800, 350);
+        stage.setScene(scene);
+        stage.show();
     }
 
     private void loadGame(String loadedMap, int playerId) {
+        System.out.println(loadedMap);
         PlayerModel playerModel = dbManager.getPlayerModel(playerId);
 
         map = MapLoader.loadMap(loadedMap);
@@ -298,7 +306,7 @@ public class Main extends Application {
 
         player.setHealth(playerModel.getHp());
         player.setAttackStrength(playerModel.getStrength());
-        //TODO: Set inventory of player
+        player.setInventory(playerModel.getInventory());
 
         refresh();
         loadLabels();

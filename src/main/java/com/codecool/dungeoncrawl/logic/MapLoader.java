@@ -7,13 +7,20 @@ import com.codecool.dungeoncrawl.data.cells.CellType;
 import com.codecool.dungeoncrawl.data.items.collectibles.*;
 import com.codecool.dungeoncrawl.data.items.consumables.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Scanner;
 
 public class MapLoader {
 
     public static GameMap loadMap(String currentMap) {
-        InputStream is = MapLoader.class.getResourceAsStream(currentMap);
+        InputStream is;
+
+        if (currentMap.endsWith(".txt")) {
+            is = MapLoader.class.getResourceAsStream(currentMap);
+        } else {
+            is = new ByteArrayInputStream(currentMap.getBytes());
+        }
 
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
