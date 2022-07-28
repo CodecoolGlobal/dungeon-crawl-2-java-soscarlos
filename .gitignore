@@ -45,7 +45,12 @@ modules.xml
 .idea/misc.xml
 *.ipr
 
+### json ###
+
+*.json
+
 ### Java ###
+
 # Compiled class file
 *.class
 
