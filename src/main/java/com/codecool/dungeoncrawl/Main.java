@@ -402,6 +402,5 @@ public class Main extends Application {
         startStage.setScene(menuScene);
         startStage.initStyle(StageStyle.DECORATED);
         startStage.showAndWait();
-
     }
 }
