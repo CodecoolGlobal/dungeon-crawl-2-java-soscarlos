@@ -39,6 +39,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.json.JSONArray;
 
+import java.awt.image.ImageProducer;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class Main extends Application {
     PlayerService playerService = new PlayerService();
     PlayService playService = new PlayService();
     ExportService export = new ExportService();
+    ImportService importService = new ImportService();
     ActorMovementValidator validate = new ActorMovementValidator();
     GameDatabaseManager dbManager;
     GameManager game;
@@ -272,7 +274,6 @@ public class Main extends Application {
 
         if (result.isPresent()) {
             String input = result.get();
-
             dbManager.saveGame(currentMap, saveAt, player, input, map.getPlayer());
         }
     }
@@ -284,17 +285,22 @@ public class Main extends Application {
         ListView<GameState> list = new ListView<>();
         ObservableList<GameState> gameStates = FXCollections.observableList(dbManager.getGameStates());
         list.setItems(gameStates);
+        Button loadFile = new Button("Load from File");
+
+        loadFile.setOnAction(actionEvent -> {
+            importService.importJSON(stage);
+        });
 
         StackPane root = new StackPane();
-        root.getChildren().add(list);
+        root.getChildren().addAll(list, loadFile);
         stage.setScene(new Scene(root, 600, 350));
         stage.showAndWait();
 
-        GameState gameState = list.getSelectionModel().getSelectedItem();
-        String map = gameState.getCurrentMap();
-        int playerId = gameState.getPlayer().getId();
-
-        loadGame(map, playerId);
+//        GameState gameState = list.getSelectionModel().getSelectedItem();
+//        String map = gameState.getCurrentMap();
+//        int playerId = gameState.getPlayer().getId();
+//
+//        loadGame(map, playerId);
     }
 
     private void loadGame(String loadedMap, int playerId) {
@@ -314,7 +320,6 @@ public class Main extends Application {
     private void exportDialog(PlayerModel playerModel) {
         int playerId = playerModel.getId();
         JSONArray jsonArray = dbManager.convertTableToJSON(playerId);
-
         export.exportJSON(jsonArray);
     }
 
