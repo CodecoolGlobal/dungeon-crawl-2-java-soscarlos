@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -112,6 +113,43 @@ public class GameStateDaoJdbc implements GameStateDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public HashMap<Integer, String> getGameStatesInfo()  {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT gs.id, gs.saved_at, p.player_name FROM game_state gs JOIN player p ON gs.player_id = p.id";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            HashMap<Integer, String> gameStatesInfo = new HashMap<>();
+
+            while(resultSet.next()) {
+                int id = resultSet.getInt(1);
+                Object timeObject = resultSet.getObject(2);
+
+                LocalDateTime timeAt = convertTimestampToLocalDateTime(timeObject);
+                String dateTime = timeAt.toString();
+                String savedAt = assembleTimeStamp(dateTime);
+
+                String playerName = resultSet.getString(3);
+                String gameState = String.join(", ", playerName, savedAt);
+
+                gameStatesInfo.put(id, gameState);
+
+            }
+
+            return gameStatesInfo;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String assembleTimeStamp(String dateTime) {
+        String date = dateTime.substring(0, dateTime.indexOf("T"));
+        String time = dateTime.substring(dateTime.indexOf("T") + 1, dateTime.indexOf("."));
+
+        return String.join(" ", date, time);
     }
 
     private LocalDateTime convertTimestampToLocalDateTime(Object data) {

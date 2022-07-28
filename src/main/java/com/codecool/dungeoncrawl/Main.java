@@ -14,7 +14,11 @@ import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
+
+import javafx.beans.value.ObservableListValue;
+
 import javafx.application.Platform;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,9 +46,8 @@ import org.json.JSONArray;
 import java.awt.image.ImageProducer;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main extends Application {
     String currentMap = Maps.mapOne;
@@ -282,8 +285,9 @@ public class Main extends Application {
         Stage stage = new Stage();
         stage.setTitle("Game state selection");
 
-        ListView<GameState> list = new ListView<>();
-        ObservableList<GameState> gameStates = FXCollections.observableList(dbManager.getGameStates());
+        HashMap<Integer, String> gameStatesInfo = new HashMap<>(dbManager.getGameStates());
+        ListView<String> list = new ListView<>();
+        ObservableList<String> gameStates = FXCollections.observableList(new ArrayList<>(gameStatesInfo.values()));
         list.setItems(gameStates);
         Button loadFile = new Button("Load from File");
 
@@ -291,16 +295,41 @@ public class Main extends Application {
             importService.importJSON(stage);
         });
 
-        StackPane root = new StackPane();
-        root.getChildren().addAll(list, loadFile);
-        stage.setScene(new Scene(root, 600, 350));
-        stage.showAndWait();
 
-//        GameState gameState = list.getSelectionModel().getSelectedItem();
-//        String map = gameState.getCurrentMap();
-//        int playerId = gameState.getPlayer().getId();
-//
-//        loadGame(map, playerId);
+        Button button = new Button("Select");
+
+        button.setOnAction(actionEvent -> {
+            String gameStateString = list.getSelectionModel().getSelectedItem();
+            GameState gameState = getGameState(gameStateString, gameStatesInfo);
+
+            String map = gameState.getCurrentMap();
+            int playerId = gameState.getPlayer().getId();
+
+            stage.close();
+            loadGame(map, playerId);
+        });
+
+        VBox vBox = new VBox(list, button);
+
+        Scene scene = new Scene(vBox, 800, 350);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private GameState getGameState(String gameStateString, HashMap<Integer, String> gameStatesInfo) {
+        try {
+            int gameStateId = 0;
+
+            for (Map.Entry<Integer, String> entry : gameStatesInfo.entrySet()) {
+                if(Objects.equals(entry.getValue(), gameStateString)) {
+                    gameStateId = entry.getKey();
+                }
+            }
+            return dbManager.getGameState(gameStateId);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void loadGame(String loadedMap, int playerId) {
@@ -312,7 +341,7 @@ public class Main extends Application {
 
         player.setHealth(playerModel.getHp());
         player.setAttackStrength(playerModel.getStrength());
-        //TODO: Set inventory of player
+        player.setInventory(playerModel.getInventory());
 
         refresh();
         loadLabels();
