@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.items.Item;
+import com.codecool.dungeoncrawl.logic.InventoryService;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.scene.control.Alert;
@@ -24,12 +25,15 @@ import java.util.stream.IntStream;
 public class GameDatabaseManager {
     private PlayerDao playerDao;
 
+    private InventoryService inventoryService;
+
     private PlayerModel model;
     private GameStateDao gameStateDao;
     private List<GameState> gameStates;
 
     public void setup() throws SQLException {
         DataSource dataSource = connect();
+        inventoryService = new InventoryService();
         playerDao = new PlayerDaoJdbc(dataSource);
         gameStateDao = new GameStateDaoJdbc(dataSource, playerDao);
         gameStates = new ArrayList<>();
@@ -81,7 +85,7 @@ public class GameDatabaseManager {
     public void saveNewGameState(String currentMap, LocalDateTime savedAt, PlayerModel playerModel, Player player) {
         GameState newState = new GameState(currentMap, savedAt, playerModel);
         ArrayList<Item> inventoryList = player.getInventory();
-        String inventory = playerModel.convertInventoryToString(inventoryList);
+        String inventory = inventoryService.convertInventoryToString(inventoryList);
         playerDao.update(player, playerModel.getId(), inventory);
         gameStates.add(newState);
         gameStateDao.add(newState, playerModel);
@@ -101,9 +105,31 @@ public class GameDatabaseManager {
             PlayerModel model = state.getPlayer();
             int playerId = model.getId();
             ArrayList<Item> inventoryList = player.getInventory();
-            String inventory = model.convertInventoryToString(inventoryList);
+            String inventory = inventoryService.convertInventoryToString(inventoryList);
             playerDao.update(player, playerId, inventory);
         }
+    }
+
+    public void setAttributes(Player player, JSONObject jsonObject){
+
+        String name = (String) jsonObject.get("player_name");
+        int hp = (int) jsonObject.get("hp");
+        int strength = (int) jsonObject.get("strength");
+        String inventoryString = (String) jsonObject.get("inventory");
+        int x = (int) jsonObject.get("x");
+        int y = (int) jsonObject.get("y");
+
+        String currentMap = (String) jsonObject.get("current_map");
+        LocalDateTime time = LocalDateTime.now();
+
+        player.setName(name);
+        player.setHealth(hp);
+        player.setAttackStrength(strength);
+        ArrayList<Item> inventoryList = inventoryService.convertStringToInventory(inventoryString);
+        player.setInventory(inventoryList);
+        savePlayer(player);
+
+        saveGame(currentMap, time, model, name, player);
     }
 
 

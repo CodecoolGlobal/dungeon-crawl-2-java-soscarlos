@@ -1,6 +1,8 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.data.actors.Player;
+import com.codecool.dungeoncrawl.logic.ImportService;
+import com.codecool.dungeoncrawl.logic.InventoryService;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import org.json.*;
 
@@ -11,9 +13,12 @@ import java.util.List;
 
 public class PlayerDaoJdbc implements PlayerDao {
     private DataSource dataSource;
+    private InventoryService inventoryService;
 
     public PlayerDaoJdbc(DataSource dataSource) {
+
         this.dataSource = dataSource;
+        inventoryService = new InventoryService();
     }
 
     @Override
@@ -24,7 +29,7 @@ public class PlayerDaoJdbc implements PlayerDao {
             statement.setString(1, player.getPlayerName());
             statement.setInt(2, player.getHp());
             statement.setInt(3, player.getStrength());
-            statement.setString(4, player.convertInventoryToString(player.getInventory()));
+            statement.setString(4, inventoryService.convertInventoryToString(player.getInventory()));
             statement.setInt(5, player.getX());
             statement.setInt(6, player.getY());
             statement.executeUpdate();

@@ -15,14 +15,10 @@ import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
 
-import javafx.beans.value.ObservableListValue;
-
 import javafx.application.Platform;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -35,23 +31,23 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.awt.image.ImageProducer;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Main extends Application {
     String currentMap = Maps.mapOne;
     GameMap map = MapLoader.loadMap(currentMap);
+
+    Stage startStage;
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -289,10 +285,18 @@ public class Main extends Application {
         ListView<String> list = new ListView<>();
         ObservableList<String> gameStates = FXCollections.observableList(new ArrayList<>(gameStatesInfo.values()));
         list.setItems(gameStates);
-        Button loadFile = new Button("Load from File");
+        Button loadFileButton = new Button("Load from File");
 
-        loadFile.setOnAction(actionEvent -> {
-            importService.importJSON(stage);
+        loadFileButton.setOnAction(actionEvent -> {
+            JSONObject jsonObject = importService.importJSON();
+            String currentMap = (String) jsonObject.get("current_map");
+
+            dbManager.setAttributes(map.getPlayer(), jsonObject);
+            int playerModelId = dbManager.getModel().getId();
+            stage.close();
+            startStage.close();
+            loadGame(currentMap, playerModelId);
+
         });
 
 
@@ -306,10 +310,11 @@ public class Main extends Application {
             int playerId = gameState.getPlayer().getId();
 
             stage.close();
+            startStage.close();
             loadGame(map, playerId);
         });
 
-        VBox vBox = new VBox(list, button);
+        VBox vBox = new VBox(list, button, loadFileButton);
 
         Scene scene = new Scene(vBox, 800, 350);
         stage.setScene(scene);
@@ -344,6 +349,7 @@ public class Main extends Application {
         player.setInventory(playerModel.getInventory());
 
         refresh();
+        gameOver.setText("");
         loadLabels();
     }
     private void exportDialog(PlayerModel playerModel) {
@@ -367,7 +373,7 @@ public class Main extends Application {
         }
     }
     private void startMenu(Player player, GameDatabaseManager gDbManager){
-        Stage startStage = new Stage();
+        startStage = new Stage();
         startStage.setTitle("CRR - Dungeon Crawler");
 
         Label introMessage = new Label("Dungeon Crawler");

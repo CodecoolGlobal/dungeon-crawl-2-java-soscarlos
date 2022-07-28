@@ -13,8 +13,8 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 
 public class ImportService {
-    public void importJSON(Stage stage){
-
+    public JSONObject importJSON(){
+        JSONObject jsonObject = null;
         FileChooser fileChooser = new FileChooser();
         String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
 
@@ -37,13 +37,13 @@ public class ImportService {
             try {
                 InputStream inputStream = new FileInputStream(file);
                 JSONTokener tokener = new JSONTokener(inputStream);
-                JSONObject jsonObject = new JSONObject(tokener);
-                System.out.println();
-                int id = (int) jsonObject.get("id");
-                System.out.println(id);
+                jsonObject = new JSONObject(tokener);
+
+
             } catch (FileNotFoundException e){
                 throw new RuntimeException(e);
             }
         }
+        return jsonObject;
     }
 }
