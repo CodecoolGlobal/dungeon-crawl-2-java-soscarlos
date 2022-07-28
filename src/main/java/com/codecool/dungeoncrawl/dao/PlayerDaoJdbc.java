@@ -1,10 +1,8 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.data.actors.Player;
-import com.codecool.dungeoncrawl.logic.ImportService;
 import com.codecool.dungeoncrawl.logic.InventoryService;
 import com.codecool.dungeoncrawl.model.PlayerModel;
-import org.json.*;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -71,21 +69,24 @@ public class PlayerDaoJdbc implements PlayerDao {
 
             if (!result.next()) return null;
 
-            String name = result.getString(2);
-            int hp = result.getInt(3); // TODO: create method getPlayerStats
-            int strength = result.getInt(4);
-            String inventory = result.getString(5);
-            int x = result.getInt(6);
-            int y = result.getInt(7);
-
-            PlayerModel playerModel = new PlayerModel(name, hp, strength, inventory, x, y);
-            playerModel.setId(id);
-
-            return playerModel;
+            return getPlayerModel(id, result);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private PlayerModel getPlayerModel(int id, ResultSet result) throws SQLException {
+        String name = result.getString(2);
+        int hp = result.getInt(3);
+        int strength = result.getInt(4);
+        String inventory = result.getString(5);
+        int x = result.getInt(6);
+        int y = result.getInt(7);
+
+        PlayerModel playerModel = new PlayerModel(name, hp, strength, inventory, x, y);
+        playerModel.setId(id);
+        return playerModel;
     }
 
     @Override
@@ -102,14 +103,7 @@ public class PlayerDaoJdbc implements PlayerDao {
 
             while (result.next()) {
                 int playerId = result.getInt(1);
-                String name = result.getString(2);
-                int hp = result.getInt(3);
-                int strength = result.getInt(4);
-                String inventory = result.getString(5);
-                int x = result.getInt(6);
-                int y = result.getInt(7);
-                PlayerModel playerModel = new PlayerModel(name, hp, strength, inventory, x, y);
-                playerModel.setId(playerId);
+                PlayerModel playerModel = getPlayerModel(playerId, result);
                 playerModels.add(playerModel);
             }
 

@@ -24,9 +24,7 @@ import java.util.stream.IntStream;
 
 public class GameDatabaseManager {
     private PlayerDao playerDao;
-
     private InventoryService inventoryService;
-
     private PlayerModel model;
     private GameStateDao gameStateDao;
     private List<GameState> gameStates;
@@ -63,7 +61,6 @@ public class GameDatabaseManager {
         return model;
     }
 
-
     public GameState getGameState(int id) {return gameStateDao.get(id);}
 
     public void saveGame(String currentMap, LocalDateTime savedAt, PlayerModel playerModel, String inputName, Player player) {
@@ -72,11 +69,9 @@ public class GameDatabaseManager {
 
         if (!stateList.isEmpty()) {
             for (GameState state : stateList) {
-                if (state.getPlayer().getPlayerName().equals(inputName) && playerModel.getPlayerName().equals(inputName)) {
+                if (state.getPlayer().getPlayerName().equals(inputName)
+                        && playerModel.getPlayerName().equals(inputName)) {
                     overWriteDialog(state, currentMap, savedAt, player);
-
-                    //                TODO add additional maps: state.addDiscoveredMap(currentMap);
-
                 } else saveNewGameState(currentMap, savedAt, playerModel, player);
             }
         } else saveNewGameState(currentMap, savedAt, playerModel, player);
@@ -116,8 +111,6 @@ public class GameDatabaseManager {
         int hp = (int) jsonObject.get("hp");
         int strength = (int) jsonObject.get("strength");
         String inventoryString = (String) jsonObject.get("inventory");
-        int x = (int) jsonObject.get("x");
-        int y = (int) jsonObject.get("y");
 
         String currentMap = (String) jsonObject.get("current_map");
         LocalDateTime time = LocalDateTime.now();
@@ -131,7 +124,6 @@ public class GameDatabaseManager {
 
         saveGame(currentMap, time, model, name, player);
     }
-
 
     public DataSource connect() throws SQLException {
 
@@ -183,7 +175,6 @@ public class GameDatabaseManager {
                 result.put(row);
             }
             return result;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
