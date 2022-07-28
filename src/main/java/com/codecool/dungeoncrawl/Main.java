@@ -274,7 +274,6 @@ public class Main extends Application {
 
         if (result.isPresent()) {
             String input = result.get();
-
             dbManager.saveGame(currentMap, saveAt, player, input, map.getPlayer());
         }
     }
@@ -321,7 +320,6 @@ public class Main extends Application {
     private void exportDialog(PlayerModel playerModel) {
         int playerId = playerModel.getId();
         JSONArray jsonArray = dbManager.convertTableToJSON(playerId);
-
         export.exportJSON(jsonArray);
     }
 
