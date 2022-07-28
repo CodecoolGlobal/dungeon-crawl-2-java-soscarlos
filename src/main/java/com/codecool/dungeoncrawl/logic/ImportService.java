@@ -39,7 +39,6 @@ public class ImportService {
                 JSONTokener tokener = new JSONTokener(inputStream);
                 jsonObject = new JSONObject(tokener);
 
-
             } catch (FileNotFoundException e){
                 throw new RuntimeException(e);
             }

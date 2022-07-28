@@ -2,9 +2,6 @@ package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -12,8 +9,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class GameStateDaoJdbc implements GameStateDao {
     private DataSource dataSource;
@@ -54,7 +49,6 @@ public class GameStateDaoJdbc implements GameStateDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
@@ -94,7 +88,7 @@ public class GameStateDaoJdbc implements GameStateDao {
 
             List<GameState> states = new ArrayList<>();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 int id = resultSet.getInt(1);
                 String map = resultSet.getString(2);
 
@@ -115,15 +109,17 @@ public class GameStateDaoJdbc implements GameStateDao {
         }
     }
 
-    public HashMap<Integer, String> getGameStatesInfo()  {
+    public HashMap<Integer, String> getGameStatesInfo() {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT gs.id, gs.saved_at, p.player_name FROM game_state gs JOIN player p ON gs.player_id = p.id";
+            String sql = "SELECT gs.id, gs.saved_at, p.player_name " +
+                    "FROM game_state gs " +
+                    "JOIN player p ON gs.player_id = p.id";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
             HashMap<Integer, String> gameStatesInfo = new HashMap<>();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 int id = resultSet.getInt(1);
                 Object timeObject = resultSet.getObject(2);
 
@@ -135,7 +131,6 @@ public class GameStateDaoJdbc implements GameStateDao {
                 String gameState = String.join(", ", playerName, savedAt);
 
                 gameStatesInfo.put(id, gameState);
-
             }
 
             return gameStatesInfo;

@@ -59,7 +59,6 @@ public class Main extends Application {
     ImportService importService = new ImportService();
     ActorMovementValidator validate = new ActorMovementValidator();
     GameDatabaseManager dbManager;
-    GameManager game;
     GridPane ui = new GridPane();
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
@@ -298,7 +297,6 @@ public class Main extends Application {
             loadGame(currentMap, playerModelId);
 
         });
-
 
         Button button = new Button("Select");
 
