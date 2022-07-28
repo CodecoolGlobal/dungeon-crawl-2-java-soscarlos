@@ -1,6 +1,8 @@
 package com.codecool.dungeoncrawl.dao;
 
+import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import org.json.*;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -22,7 +24,7 @@ public class PlayerDaoJdbc implements PlayerDao {
             statement.setString(1, player.getPlayerName());
             statement.setInt(2, player.getHp());
             statement.setInt(3, player.getStrength());
-            statement.setString(4, player.convertInventoryToString());
+            statement.setString(4, player.convertInventoryToString(player.getInventory()));
             statement.setInt(5, player.getX());
             statement.setInt(6, player.getY());
             statement.executeUpdate();
@@ -35,8 +37,22 @@ public class PlayerDaoJdbc implements PlayerDao {
     }
 
     @Override
-    public void update(PlayerModel player) {
-
+    public void update(Player player, int playerId, String inventory) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "UPDATE player SET hp = ?, strength = ?, inventory = ?, x = ?, y = ? WHERE id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, player.getHealth());
+            statement.setInt(2, player.getAttackStrength());
+            statement.setString(3, inventory);
+            statement.setInt(4, player.getX());
+            statement.setInt(5, player.getY());
+            statement.setInt(6, playerId);
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
