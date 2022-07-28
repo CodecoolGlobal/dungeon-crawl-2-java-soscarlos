@@ -125,7 +125,7 @@ public class GameDatabaseManager {
         saveGame(currentMap, time, model, name, player);
     }
 
-    private DataSource connect() throws SQLException {
+    public DataSource connect() throws SQLException {
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         String dbName = System.getenv("PSQL_DB_NAME");
