@@ -4,8 +4,8 @@ import com.codecool.dungeoncrawl.data.actors.Actor;
 import com.codecool.dungeoncrawl.data.actors.Player;
 import com.codecool.dungeoncrawl.data.cells.Cell;
 import com.codecool.dungeoncrawl.data.directions.Direction;
-import com.codecool.dungeoncrawl.util.RandomDirectionPicker;
 import com.codecool.dungeoncrawl.logic.validation.ActorMovementValidator;
+import com.codecool.dungeoncrawl.util.RandomDirectionPicker;
 
 import java.util.List;
 
@@ -48,9 +48,9 @@ public class MonsterService {
         }
     }
 
-    public void moveTroll(Actor troll, Player player){
+    public void moveTroll(Actor troll, Player player) {
         ActorMovementValidator validator = new ActorMovementValidator();
-        if (validator.playerIsClose(troll)){
+        if (validator.playerIsClose(troll)) {
             Direction direction = RandomDirectionPicker.getRandomDirection();
             moveNext(troll, player, direction);
         }
@@ -75,13 +75,14 @@ public class MonsterService {
             }
         }
     }
-    public void tryAttackPlayer(Actor monster, Player player, int dx, int dy){
+
+    public void tryAttackPlayer(Actor monster, Player player, int dx, int dy) {
         ActorMovementValidator validator = new ActorMovementValidator();
         Cell monsterCell = monster.getCell();
         Cell playerCell = player.getCell();
-        if (validator.isPlayer(monsterCell, dx, dy)){
+        if (validator.isPlayer(monsterCell, dx, dy)) {
             monster.attack(player);
-            if (player.isDead()){
+            if (player.isDead()) {
                 playerCell.setActor(null);
             }
         }

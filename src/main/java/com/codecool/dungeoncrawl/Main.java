@@ -59,7 +59,6 @@ public class Main extends Application {
     ImportService importService = new ImportService();
     ActorMovementValidator validate = new ActorMovementValidator();
     GameDatabaseManager dbManager;
-    GameManager game;
     GridPane ui = new GridPane();
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
@@ -299,7 +298,6 @@ public class Main extends Application {
 
         });
 
-
         Button button = new Button("Select");
 
         button.setOnAction(actionEvent -> {
@@ -404,6 +402,5 @@ public class Main extends Application {
         startStage.setScene(menuScene);
         startStage.initStyle(StageStyle.DECORATED);
         startStage.showAndWait();
-
     }
 }
