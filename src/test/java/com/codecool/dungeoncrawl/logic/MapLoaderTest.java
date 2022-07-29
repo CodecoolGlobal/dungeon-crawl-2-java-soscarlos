@@ -28,6 +28,11 @@ class MapLoaderTest {
     }
 
     @Test
+    void loadMapMapFileDoesNotExists(){
+        assertThrows(NullPointerException.class, () -> MapLoader.loadMap("/mao100.txt"));
+    }
+
+    @Test
     void secondMapDoesNotEqualFirstMap() {
         GameMap expected = map;
         GameMap result = MapLoader.loadMap("/map2.txt");

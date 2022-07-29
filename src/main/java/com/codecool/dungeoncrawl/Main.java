@@ -375,7 +375,7 @@ public class Main extends Application {
         startStage.setTitle("CRR - Dungeon Crawler");
 
         Label introMessage = new Label("Dungeon Crawler");
-        Label credits = new Label("code by Reka, Roman & Carlos");
+        Label credits = new Label("coded by Reka, Roman & Carlos");
         introMessage.setFont(new Font(20));
 
         Button newGameButton = new Button("New Game");
