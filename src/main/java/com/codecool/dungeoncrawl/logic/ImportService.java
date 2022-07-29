@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 
 public class ImportService {
     public JSONObject importJSON(){
-        JSONObject jsonObject = null;
         FileChooser fileChooser = new FileChooser();
         String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
 
@@ -34,16 +33,24 @@ public class ImportService {
                 file = fileChooser.showOpenDialog(null);
                 fileType = file.getName().substring(file.getName().length() - 4);
             }
-            try {
-                InputStream inputStream = new FileInputStream(file);
-                JSONTokener tokener = new JSONTokener(inputStream);
-                jsonObject = new JSONObject(tokener);
 
-
-            } catch (FileNotFoundException e){
-                throw new RuntimeException(e);
-            }
         }
+        return convertFileToJsonObject(file);
+    }
+
+    private JSONObject convertFileToJsonObject(File file){
+        JSONObject jsonObject;
+
+        try {
+            InputStream inputStream = new FileInputStream(file);
+            JSONTokener token = new JSONTokener(inputStream);
+            jsonObject = new JSONObject(token);
+
+
+        } catch (FileNotFoundException e){
+            throw new RuntimeException(e);
+        }
+
         return jsonObject;
     }
 }
